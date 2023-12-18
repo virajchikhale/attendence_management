@@ -162,10 +162,17 @@ if($_SESSION["user"]==""){
                                         </div>
                                         <div class="card-body">
                                             <div class="mx-auto d-block">
-                                                <img class="rounded-circle mx-auto d-block" src="images/icon/avatar-01.jpg" alt="Card image cap">
-                                                <h5 class="text-sm-center mt-2 mb-1"><?php echo  ucfirst($row['name']);?></h5>
+                                                <!-- <img class="rounded-circle mx-auto d-block" src="images/icon/avatar-01.jpg" alt="Card image cap"> -->
+                                                <h3 class="text-sm-center mt-2 mb-1"><?php echo  ucfirst($row['name']);?></h3>
                                                 <div id="student-info" class="location text-sm-center">
                                                     <i class="fa fa-map-marker"></i><?php echo  ucfirst($row['enroll']);?></div>
+                                            </div>
+                                            <hr>
+                                            <div class="card-text text-sm-left">
+                                                <b>Note:</b>
+                                                <p><i class="fa fa-minus"></i> You can use <b>Space Bar</b> to mark student as <b>Present</b></p>
+                                                <p><i class="fa fa-minus"></i> You can use <b>Enter</b> to mark student as <b>Absent</b></p>
+
                                             </div>
                                             <hr>
                                             <div class="card-text text-sm-center">
@@ -186,7 +193,12 @@ if($_SESSION["user"]==""){
                     echo "0 results";
                 }
             ?>
-
+            
+            <div id="success_msg" class="alert alert-success" role="alert" hidden>
+                <h4 class="alert-heading">Well done!</h4>
+                <hr>
+                <p>Your attendence were marked successfully</p>
+            </div>
            
 
 
@@ -207,26 +219,14 @@ if($_SESSION["user"]==""){
     </div>
 
     <script>
+        var date = new Date();
+        var currentDate = date.toISOString().substring(0,10);
+        var currentTime = date.toISOString().substring(11,16);
 
+        document.getElementById('date').value = currentDate;
+        document.getElementById('time').value = currentTime;
         let i = 1;
         
-        let date = new Date()
-        let year = date.getFullYear();
-        let month = date.getMonth();
-        let day = date.getDate();
-        let hr = date.getHours();
-        let min = date.getMinutes();
-        // alert(date.getTime());
-
-        var timeAfter15Minutes = new Date(date.getTime() + 15 * 60000);
-        let hr15 = timeAfter15Minutes.getHours();
-        let min15 = timeAfter15Minutes.getMinutes();
-        
-
-        // alert('hii');
-        // let datee = day + '-' + month + '-' + year;
-        // let time = hr + ':' + min;
-        let time15 = hr15 + ':' + min15;
 		function start() {
             
             let subject = $('#subject').val();
@@ -251,7 +251,6 @@ if($_SESSION["user"]==""){
                 data:{
                     date:datee,
                     time:time,
-                    time15:time15,
                     subject:subject,
                     type:'fill'
                 },
@@ -340,7 +339,9 @@ if($_SESSION["user"]==""){
                         var x = document.getElementById("card_"+i);
                         x.removeAttribute("hidden");
                     } else {
-                        alert("Attendence Complete")
+                        // alert("Attendence Complete");
+                        var x = document.getElementById("success_msg");
+                        x.removeAttribute("hidden");
                     }
                     // alert("card_"+i)
                 } 
@@ -387,7 +388,9 @@ if($_SESSION["user"]==""){
                         var x = document.getElementById("card_"+i);
                         x.removeAttribute("hidden");
                     } else {
-                        alert("Attendence Complete")
+                        // alert("Attendence Complete");
+                        var x = document.getElementById("success_msg");
+                        x.removeAttribute("hidden");
                     }
                     // ale
                 } 
