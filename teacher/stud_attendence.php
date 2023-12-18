@@ -240,9 +240,9 @@ if($_SESSION["user"]==""){
         // let datee = day + '-' + month + '-' + year;
         // let time = hr + ':' + min;
         let time15 = hr15 + ':' + min15;
-        let subject = "HCI";
 		function start() {
             
+            let subject = $('#subject').val();
             let datee = $('#date').val();
             let time = $('#time').val();
             // alert("time");
@@ -255,27 +255,52 @@ if($_SESSION["user"]==""){
             // alert(time);
 
             $.ajax({
-            type:'POST',
-            url:'../sqloperations/mark_attendence.php',
-            data:{
-                date:datee,
-                time:time,
-                time15:time15,
-                subject:subject,
-                type:'fill'
-            },
-            success:function(return_data) {
-                // alert(return_data);
-            if(return_data == "1"){
-                alert ('Something went wrong...')
-            }  else{ 
-                // alert ('student added successfully')
-                // window.location.href='test.php';
-            } 
-            }
-        });
+                type:'POST',
+                url:'../sqloperations/mark_attendence.php',
+                data:{
+                    date:datee,
+                    time:time,
+                    time15:time15,
+                    subject:subject,
+                    type:'fill'
+                },
+                success:function(return_data) {
+                    // alert(return_data);
+                if(return_data == "1"){
+                    alert ('Something went wrong...')
+                }  else{ 
+                    // alert ('student added successfully')
+                    // window.location.href='test.php';
+                } 
+                }
+            });
 		}
 
+        function get_time(time){
+            
+            let aabb = time.split(':');
+            let min = Number(aabb[1]);
+            let hr = Number(aabb[0]);
+            let new_mint = min + 15;
+            if (new_mint >= 60){
+                var new_min = (15-(60-min));
+                if (hr >= 23){
+                    var new_hr = 0;
+                    // alert(new_hr);
+                }else{
+                    var new_hr = hr + 1;
+                    // alert(new_hr);
+                }
+                // alert(new_min);
+            }else{
+                var new_min = new_mint;
+                var new_hr = hr;
+                // alert(new_min);
+                // alert(new_hr);
+            }
+            let time15 = new_hr+":"+new_min;
+            return time15;
+        }
         
 		function present() {
             //alert("card_"+i)
@@ -283,14 +308,8 @@ if($_SESSION["user"]==""){
             
             let datee = $('#date').val();
             let time = $('#time').val();
-            let aabb = time.split(':')
-            // alert(time);
-            alert(aabb[1]);
-            // var timeAfter15Minutes = new Date(datee.getTime() + 15 * 60000);
-            // let hr15 = timeAfter15Minutes.getHours();
-            // let min15 = timeAfter15Minutes.getMinutes();
-            // let time15 = hr15 + ':' + min15;
-
+            let time15 = get_time(time).toString();
+ 
             var roll = $('#roll_'+i).val();
             $.ajax({
                 type:'POST',
@@ -329,6 +348,8 @@ if($_SESSION["user"]==""){
             
             let datee = $('#date').val();
             let time = $('#time').val();
+            let time15 = get_time(time).toString();
+            alert(time15);
 
             // var timeAfter15Minutes = new Date(datee.getTime() + 15 * 60000);
             // let hr15 = timeAfter15Minutes.getHours();
