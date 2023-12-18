@@ -123,11 +123,10 @@ if($_SESSION["user"]==""){
                         <form action="" method="post" class="form-horizontal">
                             <div class="row form-group">
                                     <div class="col col-md-2">
-                                        <label for="select" class=" form-control-label">Select</label>
+                                        <label for="select" class=" form-control-label">Select Subject</label>
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <select name="subject" id="subject" class="form-control">
-                                            <option value="0">Select Subject</option>
                                             <option value="HCI">HCI</option>
                                             <option value="WT">WT</option>
                                             <option value="CN">CN</option>
@@ -171,18 +170,6 @@ if($_SESSION["user"]==""){
                                             <hr>
                                             <div class="card-text text-sm-center">
                                                 <button onclick=present() type="button" class="btn btn-success">Present</button>
-                                                <a href="#">
-                                                    <i class="fa fa-facebook pr-1"></i>
-                                                </a>
-                                                <a href="#">
-                                                    <i class="fa fa-twitter pr-1"></i>
-                                                </a>
-                                                <a href="#">
-                                                    <i class="fa fa-linkedin pr-1"></i>
-                                                </a>
-                                                <a href="#">
-                                                    <i class="fa fa-pinterest pr-1"></i>
-                                                </a>
                                                 <button onclick=absent() type="button" class="btn btn-danger">Absent</button>
                                             </div>
                                         </div>
@@ -245,6 +232,10 @@ if($_SESSION["user"]==""){
             let subject = $('#subject').val();
             let datee = $('#date').val();
             let time = $('#time').val();
+
+            document.getElementById("subject").disabled = true;
+            document.getElementById("date").disabled = true;
+            document.getElementById("time").disabled = true;
             // alert("time");
 			var x = document.getElementById("card_"+i);
 			x.removeAttribute("hidden");
@@ -274,6 +265,20 @@ if($_SESSION["user"]==""){
                 } 
                 }
             });
+            
+            document.addEventListener('keyup', event => {
+            if (event.code === 'Space') {
+                present();
+            }
+            })
+
+            
+            document.addEventListener('keyup', event => {
+            if (event.code === 'Enter') {
+                absent();
+            }
+            })
+
 		}
 
         function get_time(time){
@@ -349,7 +354,7 @@ if($_SESSION["user"]==""){
             let datee = $('#date').val();
             let time = $('#time').val();
             let time15 = get_time(time).toString();
-            alert(time15);
+            // alert(time15);
 
             // var timeAfter15Minutes = new Date(datee.getTime() + 15 * 60000);
             // let hr15 = timeAfter15Minutes.getHours();
