@@ -149,7 +149,7 @@ if($_SESSION["user"]==""){
                                                 <span class="help-block field-validation-valid" data-valmsg-for="cc-name" data-valmsg-replace="true"></span>
                                             </div>
                                             <div>
-                                                <button  onclick=response()  id="payment-button" type="submit" class="btn btn-lg btn-info btn-block">
+                                                <button  onclick=response()  id="payment-button" type="button" class="btn btn-lg btn-info btn-block">
                                                     <i class="fa fa-plus fa-lg"></i>&nbsp;
                                                     <span id="payment-button-amount">ADD</span>
                                                     <span id="payment-button-sending" style="display:none;">Adding...</span>
@@ -247,12 +247,12 @@ if($_SESSION["user"]==""){
                 table:table
             },
             success:function(return_data) {
-                alert(return_data);
+                // alert(return_data);
             if(return_data == "1"){
-                alert ('Something went wrong...')
+                alert ('Something went wrong...');
             }  else{ 
-                    alert ('student added successfully')
-                    window.location.href='test.php';
+                    alert ('student added successfully');
+                    window.location.href='stud_add.php';
             } 
             }
         });
