@@ -18,7 +18,7 @@ if($_SESSION["user"]==""){
     <meta name="keywords" content="au theme template">
 
     <!-- Title Page-->
-    <title>Add Department</title>
+    <title>Add Class</title>
 
     <!-- Fontfaces CSS-->
     <link href="css/font-face.css" rel="stylesheet" media="all">
@@ -97,7 +97,7 @@ if($_SESSION["user"]==""){
                                             <li class="list-inline-item seprate">
                                                 <span>/</span>
                                             </li>
-                                            <li class="list-inline-item">Add student</li>
+                                            <li class="list-inline-item">Add Class</li>
                                         </ul>
                                     </div>
                                     <!-- <button class="au-btn au-btn-icon au-btn--green">
@@ -120,13 +120,34 @@ if($_SESSION["user"]==""){
                             <div class="card">
                                 <div class="card-body">
                                     <div class="card-title">
-                                        <h3 class="text-center title-2">Add Student in the system</h3>
+                                        <h3 class="text-center title-2">Add Class in the system</h3>
                                     </div>
                                     <hr>
                                     <form action="" method="post" novalidate="novalidate">
                                         <div class="form-group">
-                                            <label for="dept" class="control-label mb-1">Department Name</label>
-                                            <input id="dept" name="dept" type="text" class="form-control" aria-required="true" aria-invalid="false" placeholder="Enter Name for department">
+                                            <label for="year">Year</label>
+                                            <select class="form-control" id="year" name="year" onchange=selectnone(this.id)>
+                                                <option value="none">Select Year</option>
+                                                <option value="1">First Year</option>
+                                                <option value="2">Second Year</option>
+                                                <option value="3">Third Year</option>
+                                            </select>
+                                        </div>
+                                        <input id="dept" name="dept" type="hidden" value="<?php echo $ur['department_id'];?>">
+                                        <div class="form-group">
+                                            <label for="division">Division</label>
+                                            <select class="form-control" id="division" name="division" onchange=selectnone(this.id)>
+                                                <option value="none">Select Division</option>
+                                                <option value="A">A</option>
+                                                <option value="B">B</option>
+                                                <option value="C">C</option>
+                                                <!-- <option value="D">D</option>
+                                                <option value="E">E</option>
+                                                <option value="F">F</option>
+                                                <option value="G">G</option>
+                                                <option value="H">H</option>
+                                                <option value="I">I</option> -->
+                                            </select>
                                         </div>
                                         <div>
                                             <button  onclick=response()  id="payment-button" type="button" class="btn btn-lg btn-info btn-block">
@@ -146,26 +167,88 @@ if($_SESSION["user"]==""){
                                     <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Class</th>
+                                            <th>Year</th>
+                                            <th>Division</th>
+                                            <th>Class Teacher</th>
                                         </tr>
                                     </thead>
                                     <tbody>                                        
                                         <?php
-                                            $res = mysql_query("select * from teacher_reg where department_id = '".$ur['department_id']."'");
+                                            $res = mysql_query("select * from class where department_id = '".$ur['department_id']."' ORDER BY year");
                                             $idd = 1;
                                             while($row = mysql_fetch_array($res))
                                             {
-                                            
+                                            if($row['year']=="1"){
+                                                $year="First Year";
+                                            }else if($row['year']=="2"){
+                                                $year="Second Year";
+                                            }
 
                                         ?>
                                         <tr>
                                             <td> <?php echo $idd;?></td>
-                                            <td><?php echo $row['first_name']; echo " ".$row['last_name'];?></td>
-                                            <td><?php echo $row['phone'];?></td>
+                                            <td><?php echo $year; ?></td>                                        
+                                            <input id="class_id" name="class_id" type="hidden" value="<?php echo $row['id'];?>">
+                                            <td><?php echo $row['divi'];?></td>
+                                            <?php 
+                                            if($row['teacher_id']=='0'){
+                                                ?>
+                                                <td>
+                                                <div class="form-row">
+                                                    <select class="form-control" id="department" name="department" onchange=selectnone(this.id)>
+                                                    <option value="none">Select Your Department</option>
+                                                    <?php
+                                                        $res1 = mysql_query("select * from teacher_reg where status='0'");
+                                                        $i = 1;
+                                                        while($row1 = mysql_fetch_array($res1))
+                                                                { ?>
+                                                            <option value="<?php echo $row1['id']; ?>"><?php echo $row1['first_name']; echo " ".$row1['last_name'];?></option>
+                                                        <?php $i++;} ?> 
+                                                    </select>
+                                                </div>
+                                                <br>
+                                                <button  onclick=add_teacher()  id="add_class_tech_<?php echo $row['id'];?>" type="button" class="btn btn-sm btn-info btn-block">
+                                                    <span id="payment-button-amount">Assign Class Teacher</span>
+                                                </button>
+                                                <script>
+                                                    function add_teacher() {
+                                                        var teacher_id = $('#department').val();
+                                                        var class_id = $('#class_id').val();
+                                                        // alert(division);
+                                                        // alert(year);
+                                                        // alert(dept);
+                                                        if(teacher_id=="none"){
+                                                            $('#department').val('');
+                                                            $('#department').focus();
+                                                        }else{
+                                                        $.ajax({
+                                                        type:'POST',
+                                                        url:'../sqloperations/add_class_tech.php',
+                                                        data:{
+                                                            teacher_id:teacher_id,
+                                                            class_id:class_id
+                                                        },
+                                                        success:function(return_data) {
+                                                            // alert(return_data);
+                                                        if(return_data == "1"){
+                                                            alert ('Something went wrong...');
+                                                        }  else{ 
+                                                            alert ('Teacher assigned successfully');
+                                                            window.location.href='class_add.php';
+                                                        } 
+                                                        }
+                                                    });}
+                                                    }
+                                                </script>
+                                                </td>
+                                                <?php
+                                            }else{
+                                                ?>
+                                            <td><?php echo $row1['first_name'];?></td>
+                                            <?php
+                                            }
+                                            ?>
                                         </tr>
-
-                                        
                                         <?php $idd++; }
                                             ?>
                                     </tbody>
@@ -199,20 +282,25 @@ if($_SESSION["user"]==""){
 
     <script>
 
+
 		function response() {
+            var division = $('#division').val();
+            var year = $('#year').val();
             var dept = $('#dept').val();
-            if(dept==""){
-				$('#dept').val('');
-				$('#dept').focus();
-            }else{
-            var	value = '0';
+            // alert(division);
+            // alert(year);
             // alert(dept);
+            if(dept=="none" || year=="none"){
+				$('#year').val('');
+				$('#year').focus();
+            }else{
             $.ajax({
             type:'POST',
-            url:'../sqloperations/insert_dept.php',
+            url:'../sqloperations/insert_class.php',
             data:{
-                dept:dept,
-                value:value
+                division:division,
+                year:year,
+                dept:dept
             },
             success:function(return_data) {
                 // alert(return_data);
@@ -220,7 +308,7 @@ if($_SESSION["user"]==""){
                 alert ('Something went wrong...');
             }  else{ 
                 alert ('Department added successfully');
-                window.location.href='dept_add.php';
+                window.location.href='class_add.php';
             } 
             }
         });}
