@@ -15,8 +15,13 @@
     <nav class="navbar-sidebar2">
         <ul class="list-unstyled navbar__list">
             <li class="active has-sub">
-                <a class="js-arrow" href="dept_add.php">
+                <a class="js-arrow" href="index.php">
                     <i class="fas fa-plus"></i>Add Department
+                </a>
+            </li>
+            <li class="active has-sub">
+                <a class="js-arrow" href="class_add.php">
+                    <i class="fas fa-plus"></i>Add Classroom
                 </a>
             </li>
         </ul>

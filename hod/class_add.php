@@ -198,7 +198,7 @@ if($_SESSION["user"]==""){
                                                     <select class="form-control" id="department" name="department" onchange=selectnone(this.id)>
                                                     <option value="none">Select Teacher to be assined</option>
                                                     <?php
-                                                        $res1 = mysql_query("select * from teacher_reg where status='0'");
+                                                        $res1 = mysql_query("select * from teacher_reg where status='0' and department_id = '".$ur['department_id']."'");
                                                         $i = 1;
                                                         while($row1 = mysql_fetch_array($res1))
                                                                 { ?>
