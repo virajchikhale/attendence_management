@@ -47,7 +47,7 @@ if($_SESSION["user"]==""){
 
 <?php
 			include ('../includes/connection.php');	
-			$ur = mysql_fetch_array(mysql_query("select * from admin_reg where email='".$_SESSION["user"]."'"));
+			$ur = mysql_fetch_array(mysql_query("select * from teacher_reg where email='".$_SESSION["user"]."'"));
             $sql1="select * from admin_reg";
             $sql2="select * from principal_reg";
             $sql3="select * from hod_reg";
@@ -131,6 +131,7 @@ if($_SESSION["user"]==""){
                                             <div class="form-group">
                                                 <label for="enroll" class="control-label mb-1">En. Roll No.</label>
                                                 <input id="enroll" name="enroll" type="text" class="form-control" aria-required="true" aria-invalid="false" placeholder="Enter Enrollment No. of Student">
+                                                <input id="teacher_id" name="teacher_id" type="hidden" value="<?php echo  $ur['id'];?>">
                                             </div>
                                             <div class="form-group has-success">
                                                 <label for="name" class="control-label mb-1">Full Name</label>
@@ -233,7 +234,9 @@ if($_SESSION["user"]==""){
             var name = $('#name').val();
             var phone = $('#phone').val();
             var email = $('#email').val();
+            var teacher_id = $('#teacher_id').val();
             var	table='student';
+            alert(teacher_id);
             //alert(password);
             $.ajax({
             type:'POST',
@@ -244,10 +247,11 @@ if($_SESSION["user"]==""){
                 name:name,
                 phone:phone,
                 email:email,
+                teacher_id:teacher_id,
                 table:table
             },
             success:function(return_data) {
-                // alert(return_data);
+                alert(return_data);
             if(return_data == "1"){
                 alert ('Something went wrong...');
             }  else{ 
