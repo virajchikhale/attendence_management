@@ -4,7 +4,7 @@
         <title>send</title>
     </head>
     <body>
-        <form action="thanks_mail.php" method="post">
+        <form action="email_base.php" method="post">
             e<input type="email" name="email"><br>
             s<input type="text" name="subject"><br>
             m<input type="text" name="msg"><br>

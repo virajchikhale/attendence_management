@@ -135,7 +135,7 @@ session_start();
 			table:table
 		},
         success:function(return_data) {
-			//alert(return_data);
+			alert(return_data);
 			var x = document.getElementById("alert");
 			x.style.display = "block";
           if(return_data == "1"){

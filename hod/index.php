@@ -3,7 +3,7 @@
 session_start();
 if($_SESSION["user"]==""){
     echo "<script> alert('Please login....');</script>";
-    echo '<script>window.location.href="index.php";</script>';
+    echo '<script>window.location.href="../login/hod_login.php";</script>';
 }
 ?>
 <!DOCTYPE html>

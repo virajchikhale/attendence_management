@@ -196,7 +196,7 @@ if($_SESSION["user"]==""){
                                                 <td>
                                                 <div class="form-row">
                                                     <select class="form-control" id="department" name="department" onchange=selectnone(this.id)>
-                                                    <option value="none">Select Your Department</option>
+                                                    <option value="none">Select Teacher to be assined</option>
                                                     <?php
                                                         $res1 = mysql_query("select * from teacher_reg where status='0'");
                                                         $i = 1;
@@ -207,7 +207,7 @@ if($_SESSION["user"]==""){
                                                     </select>
                                                 </div>
                                                 <br>
-                                                <button  onclick=add_teacher()  id="add_class_tech_<?php echo $row['id'];?>" type="button" class="btn btn-sm btn-info btn-block">
+                                                <button  onclick=add_teacher()  id="add_class_tech_<?php echo $row['id'];?>" type="button" class="btn btn-sm btn-info btn-block btn-warning">
                                                     <span id="payment-button-amount">Assign Class Teacher</span>
                                                 </button>
                                                 <script>
@@ -244,7 +244,10 @@ if($_SESSION["user"]==""){
                                                 <?php
                                             }else{
                                                 ?>
-                                            <td><?php echo $row1['first_name'];?></td>
+                                            <td><?php
+                                                $res2 = mysql_query("select * from teacher_reg where id='".$row['teacher_id']."'");
+                                                $row2 = mysql_fetch_array($res2);
+                                            echo $row2['first_name'];echo " ".$row2['last_name'];?></td>
                                             <?php
                                             }
                                             ?>
