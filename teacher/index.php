@@ -47,7 +47,7 @@ if($_SESSION["user"]==""){
 
 <?php
 			include ('../includes/connection.php');	
-			$ur = mysql_fetch_array(mysql_query("select * from admin_reg where email='".$_SESSION["user"]."'"));
+			$ur = mysql_fetch_array(mysql_query("select * from teacher_reg where email='".$_SESSION["user"]."'"));
             $sql1="select * from admin_reg";
             $sql2="select * from principal_reg";
             $sql3="select * from hod_reg";

@@ -227,7 +227,7 @@
                 xmlhttp.open("GET", "../email/email_base.php?q="+email+"&type=thanks&position=teacher", true);
                 xmlhttp.send(); 
 				alert('Signed Up Successfully....');
-				window.location.href='../login/teacher.php';
+				window.location.href='../teacher';
           } 
         }
       });
