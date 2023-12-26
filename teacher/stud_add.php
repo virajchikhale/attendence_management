@@ -236,7 +236,7 @@ if($_SESSION["user"]==""){
             var email = $('#email').val();
             var teacher_id = $('#teacher_id').val();
             var	table='student';
-            alert(teacher_id);
+            // alert(teacher_id);
             //alert(password);
             $.ajax({
             type:'POST',
@@ -251,7 +251,7 @@ if($_SESSION["user"]==""){
                 table:table
             },
             success:function(return_data) {
-                alert(return_data);
+                // alert(return_data);
             if(return_data == "1"){
                 alert ('Something went wrong...');
             }  else{ 

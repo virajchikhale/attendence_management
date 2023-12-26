@@ -146,7 +146,7 @@ session_start();
 		},
         success:function(return_data) {
             var aa =10;
-		alert(return_data);
+		    // alert(return_data);
           if(return_data == "1"){
 			var x = document.getElementById("alert");
 			x.style.display = "block";
