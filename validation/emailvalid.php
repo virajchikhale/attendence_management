@@ -6,8 +6,8 @@ $table = $_POST['table'];
 $type = $_POST['type'];
 
 $sql="SELECT * from $table where email='".$email."'";
-$result=mysql_query($sql);
-$cnt=mysql_num_rows($result);
+$result=mysqli_query($con, $sql);
+$cnt=mysqli_num_rows($result);
 $otp = (rand(100000,999999));
 if($type=="reg"){
         if($cnt > 0) {

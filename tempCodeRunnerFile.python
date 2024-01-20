@@ -1,0 +1,5 @@
+def fun(x:int,y:int)->int:  
+    print(x)
+    print(y)
+a = fun(50,60)
+b = fun("shvhjvh","hgkjfyjy")

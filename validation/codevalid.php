@@ -4,8 +4,8 @@ include('../includes/connection.php');
 $code = $_POST['code'];
 
         $sql="SELECT * from details where principal_verification='".$code."'";
-        $result=mysql_query($sql);
-        $cnt=mysql_num_rows($result);
+        $result=mysqli_query($con, $sql);
+        $cnt=mysqli_num_rows($result);
         if($cnt > 0) {
                 echo "0";
                 }
