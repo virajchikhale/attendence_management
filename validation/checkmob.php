@@ -5,8 +5,8 @@ $mob = $_POST['phone'];
 $table = $_POST['table'];
 
         $sql="SELECT * from $table where phone='".$mob."'";
-        $result=mysqli_query($con, $sql);
-        $cnt=mysqli_num_rows($result);
+        $result=mysql_query($sql);
+        $cnt=mysql_num_rows($result);
         if($cnt > 0) {
                 echo "1";
                 }

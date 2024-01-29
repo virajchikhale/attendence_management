@@ -2,19 +2,15 @@
 //session_start();
 error_reporting('E_All');
 
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "student_management";
-
-// Create connection
-$con = new mysqli($servername, $username, $password, $database);
-
-// Check connection
-// if ($conn->connect_error) {
-//   die("Connection failed: " . $conn->connect_error);
-// }
-// echo "Connected successfully";
-
+$con=mysql_connect("localhost","root",'');
+	if(!$con)
+		{
+			//echo "connection not succesfull";
+		}
+	else
+		{
+			//echo "connection succesfull";
+		}
+		
+mysql_select_db("student_management", $con);
 ?>

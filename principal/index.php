@@ -47,22 +47,22 @@ if($_SESSION["user"]==""){
 
 <?php
 			include ('../includes/connection.php');	
-			$ur = mysqli_fetch_array(mysqli_query($con, "select * from admin_reg where email='".$_SESSION["user"]."'"));
+			$ur = mysql_fetch_array(mysql_query("select * from admin_reg where email='".$_SESSION["user"]."'"));
             $sql1="select * from admin_reg";
             $sql2="select * from principal_reg";
             $sql3="select * from hod_reg";
             $sql4="select * from teacher_reg";
             $sql5="select * from department";
-            $result1=mysqli_query($con, $sql1);
-            $result2=mysqli_query($con, $sql2);
-            $result3=mysqli_query($con, $sql3);
-            $result4=mysqli_query($con, $sql4);
-            $result5=mysqli_query($con, $sql5);
-            $admin=mysqli_num_rows($result1);
-            $principal=mysqli_num_rows($result2);
-            $hod=mysqli_num_rows($result3);
-            $teacher=mysqli_num_rows($result4);
-            $department=mysqli_num_rows($result5);
+            $result1=mysql_query($sql1);
+            $result2=mysql_query($sql2);
+            $result3=mysql_query($sql3);
+            $result4=mysql_query($sql4);
+            $result5=mysql_query($sql5);
+            $admin=mysql_num_rows($result1);
+            $principal=mysql_num_rows($result2);
+            $hod=mysql_num_rows($result3);
+            $teacher=mysql_num_rows($result4);
+            $department=mysql_num_rows($result5);
             ?>
 
 <body class="animsition">

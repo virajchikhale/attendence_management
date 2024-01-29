@@ -9,7 +9,7 @@ $value=$_POST['value'];
 $sqlinsert="insert into department(name, status) 
 values('".$dept."', '".$value."' )";
 
-$res=mysqli_query($con, $sqlinsert);
+$res=mysql_query($sqlinsert);
 
         
 if($res) {

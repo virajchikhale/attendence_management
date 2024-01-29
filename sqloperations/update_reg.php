@@ -25,7 +25,7 @@ $sql="UPDATE ".$table." SET `password`='".$password."'  WHERE email='".$email."'
 //         values('".$fname."' , '".$lname."', '".$email."', '".$phoneno."', '".$password."')";;
 // }
 
-$res=mysqli_query($con, $sql);
+$res=mysql_query($sql);
 
         //  echo $sql;
 if($res) {

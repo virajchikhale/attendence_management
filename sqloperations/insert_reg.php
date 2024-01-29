@@ -13,7 +13,7 @@ $table=$_POST['table'];
 
 if($table=="teacher_reg"){
         $i="select * from hod_reg where department_id='".$department."'";
-        $x=mysqli_fetch_array(mysqli_query($con, $i));
+        $x=mysql_fetch_array(mysql_query($i));
         $sqlinsert="insert into teacher_reg(first_name, last_name, email,phone,password,report_to,department_id) 
         values('".$fname."' , '".$lname."', '".$email."', '".$phoneno."', '".$password."', '".$x['id']."', '".$department."')";
 }else if($table=="principal_reg"){
@@ -21,7 +21,7 @@ if($table=="teacher_reg"){
         values('".$fname."' , '".$lname."', '".$email."', '".$phoneno."', '".$password."')";
 }else if($table=="hod_reg"){
         $i="update department set status='1' where id='".$department."'";
-        $x=mysqli_fetch_array(mysqli_query($con, $i));
+        $x=mysql_fetch_array(mysql_query($i));
         $sqlinsert="insert into hod_reg(first_name, last_name, email,phone,password,report_to,department_id) 
         values('".$fname."' , '".$lname."', '".$email."', '".$phoneno."', '".$password."', '".$report_to."', '".$department."')";;
 }else if($table=="admin_reg"){
@@ -29,7 +29,7 @@ if($table=="teacher_reg"){
         values('".$fname."' , '".$lname."', '".$email."', '".$phoneno."', '".$password."')";;
 }
 
-$res=mysqli_query($con, $sqlinsert);
+$res=mysql_query($sqlinsert);
 
         
 if($res) {
