@@ -18,7 +18,7 @@ if($_SESSION["user"]==""){
     <meta name="keywords" content="au theme template">
 
     <!-- Title Page-->
-    <title>Attendence Details</title>
+    <title>Report Details</title>
 
     <!-- Fontfaces CSS-->
     <link href="css/font-face.css" rel="stylesheet" media="all">
@@ -92,12 +92,12 @@ if($_SESSION["user"]==""){
                                         <span class="au-breadcrumb-span">You are here:</span>
                                         <ul class="list-unstyled list-inline au-breadcrumb__list">
                                             <li class="list-inline-item active">
-                                                <a href="#">Home</a>
+                                                <a href="index.php">Home</a>
                                             </li>
                                             <li class="list-inline-item seprate">
                                                 <span>/</span>
                                             </li>
-                                            <li class="list-inline-item">Attendence Details</li>
+                                            <li class="list-inline-item">Report Details</li>
                                         </ul>
                                     </div>
                                     <!-- <button class="au-btn au-btn-icon au-btn--green">
@@ -117,50 +117,22 @@ if($_SESSION["user"]==""){
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <strong>Details</strong> For Attendence
+                        <strong>Details for</strong> Attendence Report
                     </div>
                     <div class="card-body card-block" id="class_details">
-                        <form action="mark_attendence.php" method="post" class="form-horizontal">
-                            <div class="row form-group">
-                                    <div class="col col-md-2">
-                                        <label for="select" class=" form-control-label">Class details</label>
-                                    </div>
-                                    <div class="col-12 col-md-4">
-                                        <select name="year" id="year" class="form-control">
-                                            <option value="1">First Year</option>
-                                            <option value="2">Second Year</option>
-                                            <option value="3">Third Year</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-12 col-md-4">
-                                        <select name="divi" id="divi" class="form-control">
-                                            <option value="A">A</option>
-                                            <option value="B">B</option>
-                                            <option value="C">C</option>
-                                        </select>
-                                    </div>
-                            </div>
+                        <form action="attn_display.php" method="post" class="form-horizontal">
                             <div class="row form-group">
                                 <div class="col col-md-2">
-                                    <label for="select" class=" form-control-label">Subject details</label>
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <select class="form-control" id="subject" name="subject" onchange=selectnone(this.id)>
-                                    <option value="none">Select Subject</option>
-                                    <?php
-                                        $res1 = mysql_query("select * from subject where department_id = '".$ur['department_id']."'");
-                                        $i = 1;
-                                        while($row1 = mysql_fetch_array($res1))
-                                                { ?>
-                                            <option value="<?php echo $row1['id']; ?>"><?php echo $row1['name'];?></option>
-                                        <?php $i++;} ?> 
-                                    </select>
+                                    <label for="select" class=" form-control-label">From Date</label>
                                 </div>
                                 <div class="col-12 col-md-3">
-                                    <input type="date" id="date" name="date" class="form-control">
+                                    <input type="date" id="f_date" name="f_date" class="form-control">
+                                </div>
+                                <div class="col col-md-2">
+                                    <label for="select" class=" form-control-label">To Date</label>
                                 </div>
                                 <div class="col-12 col-md-3">
-                                    <input type="time" id="time" name="time" class="form-control">
+                                    <input type="date" id="t_date" name="t_date" class="form-control">
                                 </div>
                             </div>
                     </div>
@@ -170,15 +142,10 @@ if($_SESSION["user"]==""){
                     
                     </form>
                 </div>
-            <div id="success_msg" class="alert alert-success" role="alert" hidden>
-                <h4 class="alert-heading">Well done!</h4>
-                <hr>
-                <p>Your attendence were marked successfully</p>
-            </div>
            
 
 
-            <?php 
+                <?php 
     include('admin_includes/footer.php')
 ?>
             <!-- END PAGE CONTAINER-->
@@ -190,10 +157,9 @@ if($_SESSION["user"]==""){
 
         var date = new Date();
         var currentDate = date.toISOString().substring(0,10);
-        var currentTime = date.toString().substring(16,21);
 
-        document.getElementById('date').value = currentDate;
-        document.getElementById('time').value = currentTime;
+        document.getElementById('f_date').value = currentDate;
+        document.getElementById('t_date').value = currentDate;
         let i = 1;
         
     </script>

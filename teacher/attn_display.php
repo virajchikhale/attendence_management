@@ -5,6 +5,10 @@ if($_SESSION["user"]==""){
     echo "<script> alert('Please login....');</script>";
     echo '<script>window.location.href="../login/teacher_login.php";</script>';
 }
+if(isset($_POST['Submit'])){
+    $f_date=$_POST['f_date'];
+    $t_date=$_POST['t_date'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +22,7 @@ if($_SESSION["user"]==""){
     <meta name="keywords" content="au theme template">
 
     <!-- Title Page-->
-    <title>Add student</title>
+    <title>Display Report</title>
 
     <!-- Fontfaces CSS-->
     <link href="css/font-face.css" rel="stylesheet" media="all">
@@ -92,16 +96,19 @@ if($_SESSION["user"]==""){
                                         <span class="au-breadcrumb-span">You are here:</span>
                                         <ul class="list-unstyled list-inline au-breadcrumb__list">
                                             <li class="list-inline-item active">
-                                                <a href="#">Home</a>
+                                                <a href="index.php">Home</a>
                                             </li>
                                             <li class="list-inline-item seprate">
                                                 <span>/</span>
                                             </li>
-                                            <li class="list-inline-item">Add Student</li>
+                                            <li class="list-inline-item">Display Report</li>
                                         </ul>
                                     </div>
-                                    <!-- <button class="au-btn au-btn-icon au-btn--green">
-                                        <i class="zmdi zmdi-plus"></i>add item</button> -->
+                                    <form action="attn_table.php" method="post" class="form-horizontal">
+                                        <input type="hidden" id="f_date" name="f_date" value="<?php echo $f_date;?>">
+                                        <input type="hidden" id="t_date" name="t_date" value="<?php echo $t_date;?>">
+                                        <button type="Submit" name="Submit" class="btn btn-success">Export to Excel Sheet</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -112,68 +119,129 @@ if($_SESSION["user"]==""){
 
 
             
+            <!-- <section class="au-bre adcrumb m-t-75"> -->
             <br>
-            <div class="section__content section__content--p30">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="card">
-                                    <div class="card-body">
-                                        <div class="card-title">
-                                            <h3 class="text-center title-2">Add Student in the system</h3>
-                                        </div>
-                                        <hr>
-                                        <form action="" method="post" novalidate="novalidate">
-                                            <div class="form-group">
-                                                <label for="roll" class="control-label mb-1">Roll No.</label>
-                                                <input id="roll" name="roll" type="text" class="form-control" aria-required="true" aria-invalid="false" placeholder="Enter Roll No. of Student">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="enroll" class="control-label mb-1">En. Roll No.</label>
-                                                <input id="enroll" name="enroll" type="text" class="form-control" aria-required="true" aria-invalid="false" placeholder="Enter Enrollment No. of Student">
-                                                <input id="teacher_id" name="teacher_id" type="hidden" value="<?php echo  $ur['id'];?>">
-                                            </div>
-                                            <div class="form-group has-success">
-                                                <label for="name" class="control-label mb-1">Full Name</label>
-                                                <input id="name" name="name" type="text" class="form-control cc-name valid" data-val="true" data-val-required="Please enter the name of student"
-                                                    autocomplete="cc-name" aria-required="true" aria-invalid="false" aria-describedby="cc-name-error" placeholder="Name of Student">
-                                                <span class="help-block field-validation-valid" data-valmsg-for="cc-name" data-valmsg-replace="true"></span>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="phone" class="control-label mb-1">Phone No.</label>
-                                                <input  onchange=phonevalid() id="phone" name="phone" type="text" class="form-control" aria-required="true" aria-invalid="false" placeholder="Enter phone No. of student">
-                                            </div>
-                                            <div class="form-group has-success">
-                                                <label for="email" class="control-label mb-1">Email</label>
-                                                <input onchange=emailvalid()  id="email" name="email" type="email" class="form-control cc-name valid" data-val="true" data-val-required="Please enter the name on card"
-                                                    autocomplete="cc-name" aria-required="true" aria-invalid="false" aria-describedby="cc-name-error" placeholder="Enter Email of Student">
-                                                <span class="help-block field-validation-valid" data-valmsg-for="cc-name" data-valmsg-replace="true"></span>
-                                            </div>
-                                            <div>
-                                                <button  onclick=response()  id="payment-button" type="button" class="btn btn-lg btn-info btn-block">
-                                                    <i class="fa fa-plus fa-lg"></i>&nbsp;
-                                                    <span id="payment-button-amount">ADD</span>
-                                                    <span id="payment-button-sending" style="display:none;">Adding...</span>
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="container">
+                <div class="table-responsive">
+                    <table class="table custom-table">
+                        <thead>
+                            <tr>
+                                <th>Enroll</th>
+                                <th>Roll</th>
+                                <th>Name</th>
+                            <?php
+                                $class = mysql_fetch_array(mysql_query("select * from class where teacher_id='".$ur["id"]."'"));
+                                $rees = mysql_query("select * from subject where year = '".$class["year"]."' && type = '0'");
+                                while($roow = mysql_fetch_array($rees))
+                                {
+                            ?>    
+                            <th><?php echo $roow['name'];?></th>
+                            <?php }
+                            ?>
+                            
+                            <th>Theory</th>
+                            <?php
+                                $class = mysql_fetch_array(mysql_query("select * from class where teacher_id='".$ur["id"]."'"));
+                                $rees = mysql_query("select * from subject where year = '".$class["year"]."' && type = '1'");
+                                while($roow = mysql_fetch_array($rees))
+                                {
+                            ?>    
+                            <th><?php echo $roow['name'];?></th>
+                            <?php }
+                            ?>
+                            <th>Practical</th>
+                            <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                                $res = mysql_query("select * from student where class_id = '".$class["id"]."'");
+                                $sr = 1;
+                                while($row = mysql_fetch_array($res))
+                                {
+                            ?>
+                            <tr>
+                                <td><?php echo $row['roll'];?></td>
+                                <td><?php echo $row['enroll']; ?></td>
+                                <td><?php echo $row['name']; ?></td>
+                            <?php
+                                $sum=0;
+                                $total_lecture=0;
+                                $rees = mysql_query("select * from subject where year = '".$class["year"]."' && type = '0'");
+                                while($roow = mysql_fetch_array($rees))
+                                {
+                                $rol = 'S_'.$row["enroll"];
+                                $present = mysql_query("select ".$rol." from attendence where ".$rol." = '1' && subject = ".$roow['id']." && date BETWEEN '".$f_date."' AND '".$t_date."'");
+                                $no_of_present = mysql_num_rows($present) ;
+                                $absent = mysql_query("select ".$rol." from attendence where ".$rol." = '0' && subject = ".$roow['id']." && date BETWEEN '".$f_date."' AND '".$t_date."'");
+                                $no_of_absent = mysql_num_rows($absent) ;
+                                $total_no = $no_of_present+$no_of_absent;
+                                $percent = ($no_of_present/$total_no)*100;
+                            ?>    
+                            <!-- <td><?php echo number_format((float)$percent, 2, '.', ''); ?></td> -->
+                            <td><?php echo $no_of_present; ?> / <?php echo $total_no; ?></td>
+                            <?php 
+                            $sum=$sum+$no_of_present;
+                            $total_lecture=$total_lecture+$total_no;
+                            } $total_percent = ($sum/$total_lecture)*100;
+                            ?>
+                            <td><?php echo number_format((float)$total_percent, 2, '.', ''); ?>%</td>
+                            <!-- <td><?php echo $sum; ?> / <?php echo $total_lecture; ?><br><?php echo number_format((float)$total_percent, 2, '.', ''); ?>%</td> -->
+                            
+                            
+                                
+                            <?php
+                                $sum_prat=0;
+                                $total_lecture_prat=0;
+                                $reess = mysql_query("select * from subject where year = '".$class["year"]."' && type = '1'");
+                                while($rooww = mysql_fetch_array($reess))
+                                {
+                                $rol = 'S_'.$row["enroll"];
+                                $presentt = mysql_query("select ".$rol." from attendence where ".$rol." = '1' && subject = ".$rooww['id']." && date BETWEEN '".$f_date."' AND '".$t_date."'");
+                                $no_of_present_prat = mysql_num_rows($presentt) ;
+                                $absentt = mysql_query("select ".$rol." from attendence where ".$rol." = '0' && subject = ".$rooww['id']." && date BETWEEN '".$f_date."' AND '".$t_date."'");
+                                $no_of_absent_prat = mysql_num_rows($absentt) ;
+                                $total_no_prat = $no_of_present_prat+$no_of_absent_prat;
+                                $percent_prat = ($no_of_present_prat/$total_no_prat)*100;
+                            ?>    
+                            <!-- <td><?php echo number_format((float)$percent, 2, '.', ''); ?></td> -->
+                            <td><?php echo $no_of_present_prat; ?> / <?php echo $total_no_prat; ?></td>
+                            <?php 
+                            $sum_prat=$sum_prat+$no_of_present_prat;
+                            $total_lecture_prat=$total_lecture_prat+$total_no_prat;
+                            } 
+                            $total_percent_prat = ($sum_prat/$total_lecture_prat)*100;
+                            ?>  
+                            <td><?php echo number_format((float)$total_percent_prat, 2, '.', ''); ?>%</td>
+                            <td><?php echo number_format((float)(($total_percent_prat+$total_percent)/2), 2, '.', ''); ?>%</td>
+                                
+                            </tr>         
+                            <?php $sr++; }
+                            ?>
+                        <?php
+                        echo "Number of Students added " . mysql_num_rows($res) ;
+                            ?>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
+
+            <!-- End of Main Content -->
+
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
 
            
 
 
-                <?php 
+    <?php 
     include('admin_includes/footer.php')
 ?>
             <!-- END PAGE CONTAINER-->
-        </div>
-
-    </div>
 
     <script>
 

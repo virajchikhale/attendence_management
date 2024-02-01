@@ -18,7 +18,7 @@ if($_SESSION["user"]==""){
     <meta name="keywords" content="au theme template">
 
     <!-- Title Page-->
-    <title>Add Department</title>
+    <title>Add Subject</title>
 
     <!-- Fontfaces CSS-->
     <link href="css/font-face.css" rel="stylesheet" media="all">
@@ -47,7 +47,7 @@ if($_SESSION["user"]==""){
 
 <?php
 			include ('../includes/connection.php');	
-			$ur = mysql_fetch_array(mysql_query("select * from admin_reg where email='".$_SESSION["user"]."'"));
+			$ur = mysql_fetch_array(mysql_query("select * from hod_reg where email='".$_SESSION["user"]."'"));
             $sql1="select * from admin_reg";
             $sql2="select * from principal_reg";
             $sql3="select * from hod_reg";
@@ -97,7 +97,7 @@ if($_SESSION["user"]==""){
                                             <li class="list-inline-item seprate">
                                                 <span>/</span>
                                             </li>
-                                            <li class="list-inline-item">Add student</li>
+                                            <li class="list-inline-item">Add Class</li>
                                         </ul>
                                     </div>
                                     <!-- <button class="au-btn au-btn-icon au-btn--green">
@@ -120,18 +120,31 @@ if($_SESSION["user"]==""){
                             <div class="card">
                                 <div class="card-body">
                                     <div class="card-title">
-                                        <h3 class="text-center title-2">Add Student in the system</h3>
+                                        <h3 class="text-center title-2">Add Class in the system</h3>
                                     </div>
                                     <hr>
                                     <form action="" method="post" novalidate="novalidate">
                                         <div class="form-group">
-                                            <label for="dept" class="control-label mb-1">Department Name</label>
-                                            <input id="dept" name="dept" type="text" class="form-control" aria-required="true" aria-invalid="false" placeholder="Enter Name for department">
+                                            <label for="name" class="control-label mb-1">Subject Name</label>
+                                            <input id="name" name="phone" type="text" class="form-control" aria-required="true" aria-invalid="false" placeholder="Enter name of subject name">
+                                        </div>                                        
+                                        <input id="dept" name="dept" type="hidden" value="<?php echo $ur['department_id'];?>">
+                                        <div class="form-group">
+                                            <label for="code" class="control-label mb-1">Subject Code</label>
+                                            <input id="code" name="code" type="text" class="form-control" aria-required="true" aria-invalid="false" placeholder="Enter name of subject code">
+                                        </div>
+                                        <div class="form-row">
+                                            <select class="form-control" id="year" name="year" onchange=selectnone(this.id)>
+                                            <option value="none">Select Year</option>
+                                                    <option value="1">First Year</option>
+                                                    <option value="2">Second Year</option>
+                                                    <option value="3>">Third Year</option>
+                                            </select>
                                         </div>
                                         <div>
                                             <button  onclick=response()  id="payment-button" type="button" class="btn btn-lg btn-info btn-block">
                                                 <i class="fa fa-plus fa-lg"></i>&nbsp;
-                                                <span id="payment-button-amount">ADD Department</span>
+                                                <span id="payment-button-amount">ADD Subject</span>
                                                 <span id="payment-button-sending" style="display:none;">Adding...</span>
                                             </button>
                                         </div>
@@ -147,36 +160,85 @@ if($_SESSION["user"]==""){
                                         <tr>
                                             <th>ID</th>
                                             <th>Name</th>
-                                            <th>HOD</th>
+                                            <th>Code</th>
+                                            <th>Teacher</th>
                                         </tr>
                                     </thead>
                                     <tbody>                                        
                                         <?php
-                                            include('../includes/connection.php');
-                                            $res = mysql_query("select * from department");
+                                            $res = mysql_query("select * from subject where department_id = '".$ur['department_id']."'");
                                             $idd = 1;
                                             while($row = mysql_fetch_array($res))
                                             {
-                                                
-                                            $res1 = mysql_query("select first_name, last_name from hod_reg where department_id = '".$row['id']."' ");
-                                            $row1 = mysql_fetch_array($res1);
 
                                         ?>
                                         <tr>
                                             <td> <?php echo $idd;?></td>
-                                            <td> <?php echo $row['name'];?></td>
-                                            <?php 
-                                            if ($row['status']==1){
+                                            <td><?php echo $row['name']; ?></td>   
+                                            <td><?php echo $row['code']; ?></td>                                        
+                                             <?php 
+                                            if($row['teacher_id']=='0'){
                                                 ?>
-                                            <td><?php echo $row1['first_name']; echo " ".$row1['last_name'];?></td>
-                                            <?php
+                                                <td>
+                                            <input id="subject_id" name="subject_id" type="hidden" value="<?php echo $row['id'];?>">
+                                                <div class="form-row">
+                                                    <select class="form-control" id="teacher_id" name="teacher_id" onchange=selectnone(this.id)>
+                                                    <option value="none">Select Teacher to be assined</option>
+                                                    <?php
+                                                        $res1 = mysql_query("select * from teacher_reg where department_id = '".$ur['department_id']."'");
+                                                        $i = 1;
+                                                        while($row1 = mysql_fetch_array($res1))
+                                                                { ?>
+                                                            <option value="<?php echo $row1['id']; ?>"><?php echo $row1['first_name']; echo " ".$row1['last_name'];?></option>
+                                                        <?php $i++;} ?> 
+                                                    </select>
+                                                </div>
+                                                <br>
+                                                <button  onclick=add_teacher()  id="add_class_tech_<?php echo $row['id'];?>" type="button" class="btn btn-sm btn-info btn-block btn-warning">
+                                                    <span id="payment-button-amount">Assign Class Teacher</span>
+                                                </button>
+                                                <script>
+                                                    function add_teacher() {
+                                                        var teacher_id = $('#teacher_id').val();
+                                                        var subject_id = $('#subject_id').val();
+                                                        // alert(division);
+                                                        // alert(year);
+                                                        // alert(dept);
+                                                        if(teacher_id=="none"){
+                                                            $('#teacher_id').val('');
+                                                            $('#teacher_id').focus();
+                                                        }else{
+                                                        $.ajax({
+                                                        type:'POST',
+                                                        url:'../sqloperations/add_subject_tech.php',
+                                                        data:{
+                                                            teacher_id:teacher_id,
+                                                            subject_id:subject_id
+                                                        },
+                                                        success:function(return_data) {
+                                                            // alert(return_data);
+                                                        if(return_data == "1"){
+                                                            alert ('Something went wrong...');
+                                                        }  else{ 
+                                                            alert ('Teacher assigned successfully');
+                                                            window.location.href='subject_add.php';
+                                                        } 
+                                                        }
+                                                    });}
+                                                    }
+                                                </script>
+                                                </td>
+                                                <?php
                                             }else{
-                                                echo "<td class='denied'>Not Assigned yet</td>";
+                                                ?>
+                                            <td><?php
+                                                $res2 = mysql_query("select * from teacher_reg where id='".$row['teacher_id']."'");
+                                                $row2 = mysql_fetch_array($res2);
+                                            echo $row2['first_name'];echo " ".$row2['last_name'];?></td>
+                                            <?php
                                             }
                                             ?>
                                         </tr>
-
-                                        
                                         <?php $idd++; }
                                             ?>
                                     </tbody>
@@ -210,32 +272,34 @@ if($_SESSION["user"]==""){
 
     <script>
 
+
 		function response() {
+            var name = $('#name').val();
+            var code = $('#code').val();
             var dept = $('#dept').val();
-            if(dept==""){
-				$('#dept').val('');
-				$('#dept').focus();
-            }else{
-            var	value = '0';
+            var year = $('#year').val();
+            // alert(division);
+            // alert(year);
             // alert(dept);
             $.ajax({
             type:'POST',
-            url:'../sqloperations/insert_dept.php',
+            url:'../sqloperations/insert_subject.php',
             data:{
-                dept:dept,
-                value:value
+                name:name,
+                code:code,
+                year:year,
+                dept:dept
             },
             success:function(return_data) {
                 // alert(return_data);
             if(return_data == "1"){
                 alert ('Something went wrong...');
             }  else{ 
-                alert ('Department added successfully');
-                window.location.href='dept_add.php';
+                alert ('Subject added successfully');
+                window.location.href='subject_add.php';
             } 
             }
         });}
-        }
     </script>
     <!-- Jquery JS-->
     <script src="vendor/jquery-3.2.1.min.js"></script>

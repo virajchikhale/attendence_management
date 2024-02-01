@@ -14,14 +14,26 @@
     </div>
     <nav class="navbar-sidebar2">
         <ul class="list-unstyled navbar__list">
-            <li class="active has-sub">
-                <a class="js-arrow" href="stud_attendence.php">
+            <li class="has-sub">
+                <a class="js-arrow" href="index.php">
                     <i class="fas fa-plus"></i>Mark Attendence
                 </a>
             </li>
+            <?php if($ur['status']=='1'){?>
             <li>
                 <a href="stud_add.php">
                     <i class="fas fa-plus"></i>Add Student</a>
+                <!-- <span class="inbox-num">3</span> -->
+            </li>
+            <li>
+                <a href="attn_report.php">
+                    <i class="fas fa-plus"></i>Attendence Report</a>
+                <!-- <span class="inbox-num">3</span> -->
+            </li><?php }
+            ?>
+            <li>
+                <a href="stud_report.php">
+                    <i class="fas fa-plus"></i>Student Report</a>
                 <!-- <span class="inbox-num">3</span> -->
             </li>
         </ul>

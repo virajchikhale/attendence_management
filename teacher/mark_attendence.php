@@ -5,6 +5,14 @@ if($_SESSION["user"]==""){
     echo "<script> alert('Please login....');</script>";
     echo '<script>window.location.href="../login/teacher_login.php";</script>';
 }
+
+if(isset($_POST['Submit'])){
+    $year=$_POST['year'];
+    $divi=$_POST['divi'];
+    $subject=$_POST['subject'];
+    $date=$_POST['date'];
+    $time=$_POST['time'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +26,7 @@ if($_SESSION["user"]==""){
     <meta name="keywords" content="au theme template">
 
     <!-- Title Page-->
-    <title>Admin</title>
+    <title>Mark Attendence</title>
 
     <!-- Fontfaces CSS-->
     <link href="css/font-face.css" rel="stylesheet" media="all">
@@ -92,12 +100,12 @@ if($_SESSION["user"]==""){
                                         <span class="au-breadcrumb-span">You are here:</span>
                                         <ul class="list-unstyled list-inline au-breadcrumb__list">
                                             <li class="list-inline-item active">
-                                                <a href="#">Home</a>
+                                                <a href="index.php">Home</a>
                                             </li>
                                             <li class="list-inline-item seprate">
                                                 <span>/</span>
                                             </li>
-                                            <li class="list-inline-item">Add student</li>
+                                            <li class="list-inline-item">Mark Attendence</li>
                                         </ul>
                                     </div>
                                     <!-- <button class="au-btn au-btn-icon au-btn--green">
@@ -117,36 +125,19 @@ if($_SESSION["user"]==""){
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <strong>Details</strong> For Attendence
+                        <strong>Marking</strong> Attendence
                     </div>
-                    <div class="card-body card-block">
+                    <div class="card-body card-block" id="class_details">
                         <form action="" method="post" class="form-horizontal">
-                            <div class="row form-group">
-                                    <div class="col col-md-2">
-                                        <label for="select" class=" form-control-label">Select Subject</label>
-                                    </div>
-                                    <div class="col-12 col-md-4">
-                                        <select name="subject" id="subject" class="form-control">
-                                            <option value="HCI">HCI</option>
-                                            <option value="WT">WT</option>
-                                            <option value="CN">CN</option>
-                                        </select>
-                                    </div>
-                                <div class="col-12 col-md-3">
-                                    <input type="date" id="date" name="date" placeholder="Enter Email..." class="form-control">
-                                </div>
-                                <div class="col-12 col-md-3">
-                                    <input type="time" id="time" name="time" placeholder="Enter Password..." class="form-control">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
                     <div  id="start_button" class="card-footer">
                         <button onclick=start() type="button" class="btn btn-info">Start Attendence</button>
                     </div>
+                    
+                    </form>
                 </div>
             <?php
-            	$result = mysql_query("select * from student");
+                $class = mysql_fetch_array(mysql_query("select * from class where year='".$year."' && divi='".$divi."' && department_id='".$ur['department_id']."'"));
+            	$result = mysql_query("select * from student where class_id='".$class['id']."'");
                 if (mysql_num_rows($result) > 0) {
                     $i = 1;
                     while ($row = mysql_fetch_assoc($result)) {
@@ -201,42 +192,24 @@ if($_SESSION["user"]==""){
             </div>
            
 
-
-            <section>
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="copyright">
-                                <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+<?php 
+    include('admin_includes/footer.php')
+?>
             <!-- END PAGE CONTAINER-->
         </div>
 
     </div>
 
     <script>
-        var date = new Date();
-        var currentDate = date.toISOString().substring(0,10);
-        var currentTime = date.toString().substring(16,21);
-
-        document.getElementById('date').value = currentDate;
-        document.getElementById('time').value = currentTime;
         let i = 1;
         
 		function start() {
             
-            let subject = $('#subject').val();
-            let datee = $('#date').val();
-            let time = $('#time').val();
+            let subject = "<?php echo  $subject;?>";
+            let datee = "<?php echo  $date;?>";
+            let time = "<?php echo  $time;?>";
 
-            document.getElementById("subject").disabled = true;
-            document.getElementById("date").disabled = true;
-            document.getElementById("time").disabled = true;
-            // alert("time");
+            // alert(subject);
 			var x = document.getElementById("card_"+i);
 			x.removeAttribute("hidden");
 			var y = document.getElementById("start_button");
@@ -310,8 +283,8 @@ if($_SESSION["user"]==""){
             //alert("card_"+i)
 
             
-            let datee = $('#date').val();
-            let time = $('#time').val();
+            let datee = "<?php echo  $date;?>";
+            let time = "<?php echo  $time;?>";
             let time15 = get_time(time).toString();
  
             var roll = $('#roll_'+i).val();
@@ -342,6 +315,8 @@ if($_SESSION["user"]==""){
                         // alert("Attendence Complete");
                         var x = document.getElementById("success_msg");
                         x.removeAttribute("hidden");
+                        // alert("Attendence Complete");
+                        setTimeout('delayer()', 2000)
                     }
                     // alert("card_"+i)
                 } 
@@ -352,8 +327,8 @@ if($_SESSION["user"]==""){
         function absent() {
         // alert("card_"+i)
             
-            let datee = $('#date').val();
-            let time = $('#time').val();
+            let datee = "<?php echo  $date;?>";
+            let time = "<?php echo  $time;?>";
             let time15 = get_time(time).toString();
             // alert(time15);
 
@@ -388,15 +363,20 @@ if($_SESSION["user"]==""){
                         var x = document.getElementById("card_"+i);
                         x.removeAttribute("hidden");
                     } else {
-                        // alert("Attendence Complete");
                         var x = document.getElementById("success_msg");
                         x.removeAttribute("hidden");
+                        // alert("Attendence Complete");
+                        setTimeout('delayer()', 5000);
                     }
                     // ale
                 } 
                 }
             });
         }
+
+        function delayer(){
+                window.location = "attn_report.php"
+            }
         
     </script>
     <!-- Jquery JS-->

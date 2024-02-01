@@ -15,13 +15,13 @@
     <nav class="navbar-sidebar2">
         <ul class="list-unstyled navbar__list">
             <li class="active has-sub">
-                <a class="js-arrow" href="index.php">
-                    <i class="fas fa-plus"></i>Add Department
+                <a class="js-arrow" href="class_add.php">
+                    <i class="fas fa-plus"></i>Add Classroom
                 </a>
             </li>
             <li class="active has-sub">
-                <a class="js-arrow" href="class_add.php">
-                    <i class="fas fa-plus"></i>Add Classroom
+                <a class="js-arrow" href="subject_add.php">
+                    <i class="fas fa-plus"></i>Add Subject
                 </a>
             </li>
         </ul>
@@ -44,7 +44,7 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="index.php" >Logout</a>
+                    <a class="btn btn-primary" href="../login" >Logout</a>
                 </div>
             </div>
         </div>

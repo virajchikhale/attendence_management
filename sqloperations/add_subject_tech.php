@@ -2,14 +2,11 @@
 include('../includes/connection.php');
 
 $teacher_id=$_POST['teacher_id'];
-$class_id=$_POST['class_id'];
+$subject_id=$_POST['subject_id'];
 
 // $i="select * from hod_reg where department_id='".$department."'";
 // $x=mysql_fetch_array(mysql_query($i));
-$sqlinsert="UPDATE class SET teacher_id ='".$teacher_id."' where id='".$class_id."'";
-$sqlinsert1="UPDATE teacher_reg SET status ='1'  where id='".$teacher_id."'";
-
-$res1=mysql_query($sqlinsert1);
+$sqlinsert="UPDATE subject SET teacher_id ='".$teacher_id."' where id='".$subject_id."'";
 $res=mysql_query($sqlinsert);
 
         

@@ -18,7 +18,7 @@ if($_SESSION["user"]==""){
     <meta name="keywords" content="au theme template">
 
     <!-- Title Page-->
-    <title>Add student</title>
+    <title>Student Report</title>
 
     <!-- Fontfaces CSS-->
     <link href="css/font-face.css" rel="stylesheet" media="all">
@@ -97,7 +97,7 @@ if($_SESSION["user"]==""){
                                             <li class="list-inline-item seprate">
                                                 <span>/</span>
                                             </li>
-                                            <li class="list-inline-item">Add Student</li>
+                                            <li class="list-inline-item">Student Report</li>
                                         </ul>
                                     </div>
                                     <!-- <button class="au-btn au-btn-icon au-btn--green">
@@ -113,63 +113,172 @@ if($_SESSION["user"]==""){
 
             
             <br>
-            <div class="section__content section__content--p30">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="card">
-                                    <div class="card-body">
-                                        <div class="card-title">
-                                            <h3 class="text-center title-2">Add Student in the system</h3>
-                                        </div>
-                                        <hr>
-                                        <form action="" method="post" novalidate="novalidate">
-                                            <div class="form-group">
-                                                <label for="roll" class="control-label mb-1">Roll No.</label>
-                                                <input id="roll" name="roll" type="text" class="form-control" aria-required="true" aria-invalid="false" placeholder="Enter Roll No. of Student">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="enroll" class="control-label mb-1">En. Roll No.</label>
-                                                <input id="enroll" name="enroll" type="text" class="form-control" aria-required="true" aria-invalid="false" placeholder="Enter Enrollment No. of Student">
-                                                <input id="teacher_id" name="teacher_id" type="hidden" value="<?php echo  $ur['id'];?>">
-                                            </div>
-                                            <div class="form-group has-success">
-                                                <label for="name" class="control-label mb-1">Full Name</label>
-                                                <input id="name" name="name" type="text" class="form-control cc-name valid" data-val="true" data-val-required="Please enter the name of student"
-                                                    autocomplete="cc-name" aria-required="true" aria-invalid="false" aria-describedby="cc-name-error" placeholder="Name of Student">
-                                                <span class="help-block field-validation-valid" data-valmsg-for="cc-name" data-valmsg-replace="true"></span>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="phone" class="control-label mb-1">Phone No.</label>
-                                                <input  onchange=phonevalid() id="phone" name="phone" type="text" class="form-control" aria-required="true" aria-invalid="false" placeholder="Enter phone No. of student">
-                                            </div>
-                                            <div class="form-group has-success">
-                                                <label for="email" class="control-label mb-1">Email</label>
-                                                <input onchange=emailvalid()  id="email" name="email" type="email" class="form-control cc-name valid" data-val="true" data-val-required="Please enter the name on card"
-                                                    autocomplete="cc-name" aria-required="true" aria-invalid="false" aria-describedby="cc-name-error" placeholder="Enter Email of Student">
-                                                <span class="help-block field-validation-valid" data-valmsg-for="cc-name" data-valmsg-replace="true"></span>
-                                            </div>
-                                            <div>
-                                                <button  onclick=response()  id="payment-button" type="button" class="btn btn-lg btn-info btn-block">
-                                                    <i class="fa fa-plus fa-lg"></i>&nbsp;
-                                                    <span id="payment-button-amount">ADD</span>
-                                                    <span id="payment-button-sending" style="display:none;">Adding...</span>
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
+            <div class="container">
+                <div class="table-responsive">
+                    <table class="table custom-table">
+                    <thead>
+                        <tr>
+                            <th>Edit</th>
+                            <th>Enroll</th>
+                            <th>Roll</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                                    $class = mysql_fetch_array(mysql_query("select * from class where teacher_id='".$ur["id"]."'"));
+                                    $res = mysql_query("select * from student where class_id = '".$class["id"]."'");
+                                    $sr = 1;
+                                    while($row = mysql_fetch_array($res))
+                                    {
+                                ?>
+                        <tr>
+                        <th scope="row">
+                            <label class="control control--checkbox">
+                            <button type="button" data-toggle="modal" data-target="#exampleModal_<?php echo $row['id'] ;?>"><i class="far fa-edit"></i></button>
+                            <div class="control__indicator"></div>
+                            </label>
+                        </th>
+
+
+
+              <div class="modal fade" id="exampleModal_<?php echo $row['id'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    
+                    <?php  $query1="SELECT * FROM admin_reg where id='".$row['id']."' ";
+                        $query_run2=mysql_query($query1);
+                        $results = mysql_fetch_array($query_run2);
+                        //echo $results['keyword']; 
+                        // echo $results['question']; 					  
+                    ?>
+					<div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">UPDATE CURRENT ADMIN</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                        </div>
+						  
+                        <div class="modal-body">
+                            <form  method="POST" enctype="multipart/form-data">
+                    
+                                <div class="form-group mb-3">
+                                <label for="">ID</label><input type="text" name="ID" class="form-control" value="<?php echo $results['id']; ?>">
+                                <label for="">First Name</label><input type="text" name="fname" class="form-control" value="<?php echo $results['fname']; ?>">
+                                <label for="">Last Name</label><input type="text" name="lname" class="form-control" value="<?php echo $results['lname']; ?>">
+                                <label for="">Email</label><input type="email" name="email" class="form-control" value="<?php echo $results['email']; ?>">
+
                                 </div>
-                            </div>
+                                <div class="form-group mb-3">
+                                <button type="submit" name="update_<?php echo $row['id']; ?>" class="btn btn-success">update</button>
+                                </div>
+
+                            </form>
+                        </div> 
+					</div>
+		        </div>
+			 </div>
+             <?php if(isset($_POST['update_'.$row['id']]))
+                {		
+                $fname=$_POST['fname'];
+                $lname=$_POST['lname'];
+                $email=$_POST['email'];
+
+    
+                    $que="UPDATE `admin_reg` SET `fname`='".$fname."',`lname`='".$lname."',`email`='".$email."'  WHERE id='".$row['id']."'" ;
+                    mysql_query($que);
+                    
+                    echo "<script> alert('Updated Successfully....');</script>";
+                    echo '<script>window.location.href="admin-report.php";</script>';
+                }?>
+
+              <td><?php echo $row['roll'];?></td>
+              <td><?php echo $row['enroll']; ?></td>
+              <td><?php echo $row['name']; ?></td>
+              <td><?php echo $row['phone']; ?></td>
+              <td><?php echo $row['email']; ?></td>
+              <th scope="row">
+                <label class="control control--checkbox">
+                <button type="button" data-toggle="modal" data-target="#deleteModal_<?php echo $row['id'] ;?>"><i class="fas fa-trash-alt"></i>ff</button>
+                  <div class="control__indicator"></div>
+                </label>
+              </th>
+
+
+
+
+            <div class="modal fade" id="deleteModal_<?php echo $row['id'];?>"tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-danger" id="exampleModalLongTitle" style="text-align: center;font-size: 25px;">DELETE</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure want to delete this Admin......? </p>
+                        </div>
+                        <div class="modal-footer">
+                        <form  method="POST" enctype="multipart/form-data">
+                            <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Close</button>
+                            <button type="submit" name="delete_<?php echo $row['id']; ?>" class="btn btn-success">Delete</button>
+                        </form>
                         </div>
                     </div>
                 </div>
+			</div>
+            <?php if(isset($_POST['delete_'.$row['id']]))
+				  {		 
+				  	$que = "delete from admin_reg where id = '".$row['id']."' ";
+					mysql_query($que);
+					echo '<script>window.location.href="admin-report.php";</script>';
+				}?>
+            </tr>         
+            <?php $sr++; }
+            ?>
+           <?php
+           echo "Number of Students added " . mysql_num_rows($res) ;
+            ?>
+          </tbody>
+        </table>
+      </div>
+
+
+    </div>
+
+    </div>	
+        </div>
+            <!-- End of Main Content -->
+
+			<!-- Footer -->
+			<?php
+				include ('../includes/footer.php');
+			?>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
 
            
 
 
-                <?php 
-    include('admin_includes/footer.php')
-?>
+            <section>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="copyright">
+                                <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
             <!-- END PAGE CONTAINER-->
         </div>
 
