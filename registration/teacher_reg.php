@@ -89,13 +89,13 @@
 						<!-- SECTION 2 -->
 			            <h2>
 			            	<p class="step-icon"><span>02</span></p>
-			            	<span class="step-text">Adderss Information</span>
+			            	<span class="step-text">Department Selection</span>
 			            </h2>
 			            <section>
 			                <div class="inner">
 			                	<div class="wizard-header">
 									<h3 class="heading">Select Department</h3>
-									<p>Please enter your infomation and proceed to the next step so we can build your accounts.</p>
+									<p>Please select the department in which you going to work.</p>
 								</div>
 								<div class="form-row">
 									<div class="form-holder form-holder-1">
@@ -123,7 +123,7 @@
 			                <div class="inner">
 			                	<div class="wizard-header">
 									<h3 class="heading">OTP Verifiction</h3>
-									<p>Please enter your infomation and proceed to the next step so we can build your accounts.</p>
+									<p>Please enter OTP which has been sent on email id which you have provided.</p>
 								</div>
 								<div class="form-row">
 									<div class="form-holder form-holder-1">

@@ -20,22 +20,6 @@
 </head>
 <?php
 		include("../includes/connection.php");
-		// if(isset($_POST['submit'])){
-		// $fname=$_POST['fname'];
-		// $lname=$_POST['lname'];
-		// $email=$_POST['email'];
-		// $phoneno=$_POST['phoneno'];
-		// $password=md5($_POST['password']);
-		// $cpassword=$_POST['cpassword'];
-
-		// $sqlinsert="insert into principal_reg(first_name, last_name, email,phone,password) 
-		// values('".$fname."' , '".$lname."', '".$email."', '".$phoneno."', '".$password."')";
-		// mysql_query($sqlinsert);
-		// //echo $sqlinsert;
-		// echo "<script> alert('Signed Up Successfully....'); </script>";
-		// echo "<script> window.location.href='index.php'; </script>";
-                                        
-		// }
 	?>
 <body onload="disable()">
 	<div class="page-content">
@@ -132,7 +116,7 @@
 			                <div class="inner">
 			                	<div class="wizard-header">
 									<h3 class="heading">OTP Verifiction</h3>
-									<p>Please enter your infomation and proceed to the next step so we can build your accounts.</p>
+									<p>Please enter OTP which has been sent on email id which you have provided.</p>
 								</div>
 								<div class="form-row">
 									<div class="form-holder form-holder-1">
