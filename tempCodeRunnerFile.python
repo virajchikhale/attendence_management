@@ -1,10 +1,21 @@
-table_name = "attendence"  # Replace with your actual table name
+def decorFun(func):
 
-# Generate the SQL query
-sql_query = ""
-for i in range(5, 101):
-    column_name = f"S_{i}"
-    sql_query += f"ALTER TABLE {table_name} ADD {column_name} int(11) NOT NULL DEFAULT '-1';\n"
+    def wrapper():
 
-# Print the SQL query
-print(sql_query)
+        print("Start Wrapper")
+
+        func()
+
+        print("End Wrapper")
+
+    return wrapper
+
+@decorFun
+
+def normalFun():
+
+    print("In normal fun")
+
+#normalFun = decorFun(normalFun)
+
+normalFun()
