@@ -83,7 +83,7 @@ session_start();
 						<span class="txt1">
 							Forgot
 						</span>
-						<a class="txt2" href="../forgot_password/principal_forgot.php">
+						<a class="txt2" href="../forgot_password/teacher_forgot.php">
 							Username / Password?
 						</a>
 					</div>

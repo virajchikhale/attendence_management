@@ -55,17 +55,17 @@ session_start();
 					</span>
 					
 					<div class="container-login100-form-btn">
-						<a type='Button' href="../login/principal_login.php" class="login100-form-btn">
+						<a type='Button' href="login/principal_login.php" class="login100-form-btn">
 							Principal Login
 						</a>
 					</div>
 					<div class="container-login100-form-btn">
-						<a type='Button' href="../login/hod_login.php" class="login100-form-btn">
+						<a type='Button' href="login/hod_login.php" class="login100-form-btn">
 							HOD Login
 						</a>
 					</div>
 					<div class="container-login100-form-btn">
-						<a type='Button' href="../login/teacher_login.php" class="login100-form-btn">
+						<a type='Button' href="login/teacher_login.php" class="login100-form-btn">
 							Teacher Login
 						</a>
 					</div>
