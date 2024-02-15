@@ -97,7 +97,7 @@ if($_SESSION["user"]==""){
                                             <li class="list-inline-item seprate">
                                                 <span>/</span>
                                             </li>
-                                            <li class="list-inline-item">Add Class</li>
+                                            <li class="list-inline-item">Add Subject</li>
                                         </ul>
                                     </div>
                                     <!-- <button class="au-btn au-btn-icon au-btn--green">
@@ -120,7 +120,7 @@ if($_SESSION["user"]==""){
                             <div class="card">
                                 <div class="card-body">
                                     <div class="card-title">
-                                        <h3 class="text-center title-2">Add Class in the system</h3>
+                                        <h3 class="text-center title-2">Add Subject in the system</h3>
                                     </div>
                                     <hr>
                                     <form action="" method="post" novalidate="novalidate">
@@ -141,6 +141,7 @@ if($_SESSION["user"]==""){
                                                     <option value="3>">Third Year</option>
                                             </select>
                                         </div>
+                                        <br>
                                         <div>
                                             <button  onclick=response()  id="payment-button" type="button" class="btn btn-lg btn-info btn-block">
                                                 <i class="fa fa-plus fa-lg"></i>&nbsp;
@@ -251,20 +252,9 @@ if($_SESSION["user"]==""){
             </div>
                 
 
-           
-
-
-            <section>
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="copyright">
-                                <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <?php
+                include ('admin_includes/footer.php');
+            ?>
             <!-- END PAGE CONTAINER-->
         </div>
 
