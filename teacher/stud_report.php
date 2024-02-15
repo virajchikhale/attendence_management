@@ -148,7 +148,7 @@ if($_SESSION["user"]==""){
               <div class="modal fade" id="exampleModal_<?php echo $row['id'];?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     
-                    <?php  $query1="SELECT * FROM admin_reg where id='".$row['id']."' ";
+                    <?php  $query1="SELECT * FROM student where id='".$row['id']."' ";
                         $query_run2=mysql_query($query1);
                         $results = mysql_fetch_array($query_run2);
                         //echo $results['keyword']; 
@@ -167,8 +167,10 @@ if($_SESSION["user"]==""){
                     
                                 <div class="form-group mb-3">
                                 <label for="">ID</label><input type="text" name="ID" class="form-control" value="<?php echo $results['id']; ?>">
-                                <label for="">First Name</label><input type="text" name="fname" class="form-control" value="<?php echo $results['fname']; ?>">
-                                <label for="">Last Name</label><input type="text" name="lname" class="form-control" value="<?php echo $results['lname']; ?>">
+                                <label for="">Roll No.</label><input type="text" name="roll" class="form-control" value="<?php echo $results['roll']; ?>">
+                                <label for="">Enrollment No.</label><input type="text" name="enroll" class="form-control" value="<?php echo $results['enroll']; ?>">
+                                <label for="">Name</label><input type="text" name="name" class="form-control" value="<?php echo $results['name']; ?>">
+                                <label for="">Phone Number</label><input type="text" name="phone" class="form-control" value="<?php echo $results['phone']; ?>">
                                 <label for="">Email</label><input type="email" name="email" class="form-control" value="<?php echo $results['email']; ?>">
 
                                 </div>
@@ -183,16 +185,18 @@ if($_SESSION["user"]==""){
 			 </div>
              <?php if(isset($_POST['update_'.$row['id']]))
                 {		
-                $fname=$_POST['fname'];
-                $lname=$_POST['lname'];
+                $roll=$_POST['roll'];
+                $enroll=$_POST['enroll'];
+                $name=$_POST['name'];
+                $phone=$_POST['phone'];
                 $email=$_POST['email'];
 
     
-                    $que="UPDATE `admin_reg` SET `fname`='".$fname."',`lname`='".$lname."',`email`='".$email."'  WHERE id='".$row['id']."'" ;
+                    $que="UPDATE `student` SET `roll`='".$roll."',`enroll`='".$enroll."' ,`name`='".$name."',`phone`='".$phone."' ,`email`='".$email."'  WHERE id='".$row['id']."'" ;
                     mysql_query($que);
                     
                     echo "<script> alert('Updated Successfully....');</script>";
-                    echo '<script>window.location.href="admin-report.php";</script>';
+                    echo '<script>window.location.href="stud_report.php";</script>';
                 }?>
 
               <td><?php echo $row['roll'];?></td>
@@ -202,7 +206,7 @@ if($_SESSION["user"]==""){
               <td><?php echo $row['email']; ?></td>
               <th scope="row">
                 <label class="control control--checkbox">
-                <button type="button" data-toggle="modal" data-target="#deleteModal_<?php echo $row['id'] ;?>"><i class="fas fa-trash-alt"></i>ff</button>
+                <button type="button" data-toggle="modal" data-target="#deleteModal_<?php echo $row['id'] ;?>"><i class="fas fa-trash-alt"></i></button>
                   <div class="control__indicator"></div>
                 </label>
               </th>
@@ -220,7 +224,7 @@ if($_SESSION["user"]==""){
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p>Are you sure want to delete this Admin......? </p>
+                            <p>Are you sure want to delete this Student......? </p>
                         </div>
                         <div class="modal-footer">
                         <form  method="POST" enctype="multipart/form-data">
@@ -233,9 +237,10 @@ if($_SESSION["user"]==""){
 			</div>
             <?php if(isset($_POST['delete_'.$row['id']]))
 				  {		 
-				  	$que = "delete from admin_reg where id = '".$row['id']."' ";
+				  	$que = "delete from student where id = '".$row['id']."' ";
 					mysql_query($que);
-					echo '<script>window.location.href="admin-report.php";</script>';
+                    echo "<script> alert('Deleted Successfully....');</script>";
+					echo '<script>window.location.href="stud_report.php";</script>';
 				}?>
             </tr>         
             <?php $sr++; }

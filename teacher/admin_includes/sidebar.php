@@ -16,7 +16,7 @@
         <ul class="list-unstyled navbar__list">
             <li class="has-sub">
                 <a class="js-arrow" href="index.php">
-                    <i class="fas fa-plus"></i>Mark Attendence
+                    <i class="fas fa-check"></i>Mark Attendence
                 </a>
             </li>
             <?php if($ur['status']=='1'){?>
@@ -27,13 +27,13 @@
             </li>
             <li>
                 <a href="attn_report.php">
-                    <i class="fas fa-plus"></i>Attendence Report</a>
+                <i class="fa-solid fa-book"></i>Attendence Report</a>
                 <!-- <span class="inbox-num">3</span> -->
             </li><?php }
             ?>
             <li>
                 <a href="stud_report.php">
-                    <i class="fas fa-plus"></i>Student Report</a>
+                <i class="fa-solid fa-graduation-cap"></i>Student Report</a>
                 <!-- <span class="inbox-num">3</span> -->
             </li>
         </ul>
@@ -57,7 +57,7 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="index.php" >Logout</a>
+                    <a class="btn btn-primary" href="../" >Logout</a>
                 </div>
             </div>
         </div>

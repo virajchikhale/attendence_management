@@ -179,8 +179,8 @@ if($_SESSION["user"]==""){
 
 
             <?php 
-    include('admin_includes/footer.php')
-?>
+                include('admin_includes/footer.php')
+            ?>
             <!-- END PAGE CONTAINER-->
         </div>
 

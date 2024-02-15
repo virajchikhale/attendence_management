@@ -137,7 +137,7 @@ if($_SESSION["user"]==""){
                             </div>
                     </div>
                     <div  id="start_button" class="card-footer">
-                        <button type="Submit" name="Submit" class="btn btn-info">Start Attendence</button>
+                        <button type="Submit" name="Submit" class="btn btn-info">View Attendence</button>
                     </div>
                     
                     </form>
