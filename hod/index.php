@@ -267,17 +267,9 @@ if($_SESSION["user"]==""){
            
 
 
-            <section>
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="copyright">
-                                <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <?php
+                include ('admin_includes/sidebar.php');
+            ?>
             <!-- END PAGE CONTAINER-->
         </div>
 

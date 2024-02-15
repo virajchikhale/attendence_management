@@ -97,7 +97,7 @@ if($_SESSION["user"]==""){
                                             <li class="list-inline-item seprate">
                                                 <span>/</span>
                                             </li>
-                                            <li class="list-inline-item">Add student</li>
+                                            <li class="list-inline-item">Add Department</li>
                                         </ul>
                                     </div>
                                     <!-- <button class="au-btn au-btn-icon au-btn--green">
@@ -197,7 +197,7 @@ if($_SESSION["user"]==""){
                     <div class="row">
                         <div class="col-md-12">
                             <div class="copyright">
-                                <p>Copyright © 2018 Colorlib. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a>.</p>
+                                <p>Copyright © 2024 Code Likho. All rights reserved. Template by <a href="http://codelikho.in">CodeLikho</a>.</p>
                             </div>
                         </div>
                     </div>

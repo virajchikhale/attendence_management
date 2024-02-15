@@ -16,13 +16,14 @@
         <ul class="list-unstyled navbar__list">
             <li class="active has-sub">
                 <a class="js-arrow" href="dept_add.php">
-                    <i class="fas fa-plus"></i>Add Department
+                    <i class="fa-solid fa-building"></i>Add Department
                 </a>
             </li>
         </ul>
     </nav>
 </div>
 </aside>
+<script src="https://kit.fontawesome.com/d543b2820b.js" crossorigin="anonymous"></script>
 
 
     <!-- Logout Modal-->
@@ -39,7 +40,7 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="../login" >Logout</a>
+                    <a class="btn btn-primary" href="../" >Logout</a>
                 </div>
             </div>
         </div>

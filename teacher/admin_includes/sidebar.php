@@ -40,6 +40,7 @@
     </nav>
 </div>
 </aside>
+<script src="https://kit.fontawesome.com/d543b2820b.js" crossorigin="anonymous"></script>
 
 
     <!-- Logout Modal-->

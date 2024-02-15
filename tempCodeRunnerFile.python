@@ -1,21 +1,28 @@
-def decorFun(func):
+class vehicle:
+    def __init__(self, brand, model, year , speed):
+        self.brand=brand
+        self.model=model
+        self.year=year
+        self.speed=speed
 
-    def wrapper():
+    def accelerate(self):
+        print("in first acc")
 
-        print("Start Wrapper")
+    def brake(self):
+        print("in first brake")
+    
+    def honk(self):
+        print("in first honk")
 
-        func()
+class v2(vehicle):
+    def accelerate(self):
+        print("in second acc")
 
-        print("End Wrapper")
+    def honk(self):
+        print("in second honk")
 
-    return wrapper
+c1=vehicle('tata','nexu', 2022, 80)
+c2=v2('tata','nexu', 2022, 80)
 
-@decorFun
-
-def normalFun():
-
-    print("In normal fun")
-
-#normalFun = decorFun(normalFun)
-
-normalFun()
+c1.honk()
+c2.honk()
