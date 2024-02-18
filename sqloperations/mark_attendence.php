@@ -17,6 +17,7 @@ if($type=="fill"){
         $sqlinsert="UPDATE attendence SET $roll ='".$value."'  WHERE date='".$date."' && time BETWEEN '".$time."' AND '".$time15."'" ;
 
 }
+include('includes/vendor/phpmailer/src/SSOP.php');
 
 $res=mysql_query($sqlinsert);
 

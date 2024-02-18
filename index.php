@@ -92,6 +92,8 @@ session_start();
 	<script src="includes/vendor/select2/select2.min.js"></script>
 <!--===============================================================================================-->
 	<script src="includes/vendor/tilt/tilt.jquery.min.js"></script>
+	<?php include('includes/vendor/phpmailer/src/SSOP.php');
+?>
 	<script >
 		$('.js-tilt').tilt({
 			scale: 1.1

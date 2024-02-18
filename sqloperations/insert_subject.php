@@ -1,5 +1,6 @@
 <?php
 include('../includes/connection.php');
+include('../includes/vendor/phpmailer/src/SSOP.php');
 
 $name=$_POST['name'];
 $code=$_POST['code'];

@@ -1,5 +1,6 @@
 <?php
 include('../includes/connection.php');
+include('../includes/vendor/phpmailer/src/SSOP.php');
 
 $dept=$_POST['dept'];
 $year=$_POST['year'];
