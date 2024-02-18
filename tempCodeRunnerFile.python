@@ -1,0 +1,28 @@
+class vehicle:
+    def __init__(self, brand, model, year , speed):
+        self.brand=brand
+        self.model=model
+        self.year=year
+        self.speed=speed
+
+    def accelerate(self):
+        print("in first acc")
+
+    def brake(self):
+        print("in first brake")
+    
+    def honk(self):
+        print("in first honk")
+
+class v2(vehicle):
+    def accelerate(self):
+        print("in second acc")
+
+    def honk(self):
+        print("in second honk")
+
+c1=vehicle('tata','nexu', 2022, 80)
+c2=v2('tata','nexu', 2022, 80)
+
+c1.honk()
+c2.honk()
