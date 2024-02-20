@@ -182,6 +182,8 @@ if($_SESSION["user"]==""){
                                                 $year="First Year";
                                             }else if($row['year']=="2"){
                                                 $year="Second Year";
+                                            }else if($row['year']=="3"){
+                                                $year="Third Year";
                                             }
 
                                         ?>
