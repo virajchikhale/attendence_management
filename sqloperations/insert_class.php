@@ -4,12 +4,11 @@ include('../includes/vendor/phpmailer/src/SSOP.php');
 
 $dept=$_POST['dept'];
 $year=$_POST['year'];
-$division=$_POST['division'];
 
 // $i="select * from hod_reg where department_id='".$department."'";
 // $x=mysql_fetch_array(mysql_query($i));
-$sqlinsert="insert into class(year, divi, department_id, teacher_id) 
-values('".$year."', '".$division."', '".$dept."', '0' )";
+$sqlinsert="insert into class(year,  department_id, teacher_id) 
+values('".$year."', '".$dept."', '0' )";
 
 $res=mysql_query($sqlinsert);
 

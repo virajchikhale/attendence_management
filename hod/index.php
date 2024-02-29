@@ -134,21 +134,21 @@ if($_SESSION["user"]==""){
                                             </select>
                                         </div>
                                         <input id="dept" name="dept" type="hidden" value="<?php echo $ur['department_id'];?>">
-                                        <div class="form-group">
+                                        <!-- <div class="form-group">
                                             <label for="division">Division</label>
                                             <select class="form-control" id="division" name="division" onchange=selectnone(this.id)>
                                                 <option value="none">Select Division</option>
                                                 <option value="A">A</option>
                                                 <option value="B">B</option>
                                                 <option value="C">C</option>
-                                                <!-- <option value="D">D</option>
+                                                <option value="D">D</option>
                                                 <option value="E">E</option>
                                                 <option value="F">F</option>
                                                 <option value="G">G</option>
                                                 <option value="H">H</option>
-                                                <option value="I">I</option> -->
+                                                <option value="I">I</option>
                                             </select>
-                                        </div>
+                                        </div> -->
                                         <div>
                                             <button  onclick=response()  id="payment-button" type="button" class="btn btn-lg btn-info btn-block">
                                                 <i class="fa fa-plus fa-lg"></i>&nbsp;
@@ -168,7 +168,7 @@ if($_SESSION["user"]==""){
                                         <tr>
                                             <th>ID</th>
                                             <th>Year</th>
-                                            <th>Division</th>
+                                            <!-- <th>Division</th> -->
                                             <th>Class Teacher</th>
                                         </tr>
                                     </thead>
@@ -190,7 +190,7 @@ if($_SESSION["user"]==""){
                                         <tr>
                                             <td> <?php echo $idd;?></td>
                                             <td><?php echo $year; ?></td>                                        
-                                            <td><?php echo $row['divi'];?></td>
+                                            <!-- <td><?php echo $row['divi'];?></td> -->
                                             <?php 
                                             if($row['teacher_id']=='0'){
                                                 ?>
@@ -281,7 +281,7 @@ if($_SESSION["user"]==""){
 
 
 		function response() {
-            var division = $('#division').val();
+            // var division = $('#division').val();
             var year = $('#year').val();
             var dept = $('#dept').val();
             // alert(division);
@@ -295,7 +295,6 @@ if($_SESSION["user"]==""){
             type:'POST',
             url:'../sqloperations/insert_class.php',
             data:{
-                division:division,
                 year:year,
                 dept:dept
             },

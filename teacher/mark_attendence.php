@@ -8,7 +8,7 @@ if($_SESSION["user"]==""){
 
 if(isset($_POST['Submit'])){
     $year=$_POST['year'];
-    $divi=$_POST['divi'];
+    // $divi=$_POST['divi'];
     $subject=$_POST['subject'];
     $date=$_POST['date'];
     $time=$_POST['time'];
@@ -136,7 +136,7 @@ if(isset($_POST['Submit'])){
                     </form>
                 </div>
             <?php
-                $class = mysql_fetch_array(mysql_query("select * from class where year='".$year."' && divi='".$divi."' && department_id='".$ur['department_id']."'"));
+                $class = mysql_fetch_array(mysql_query("select * from class where year='".$year."' && department_id='".$ur['department_id']."'"));
             	$result = mysql_query("select * from student where class_id='".$class['id']."'");
                 if (mysql_num_rows($result) > 0) {
                     $i = 1;

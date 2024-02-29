@@ -132,13 +132,13 @@ if($_SESSION["user"]==""){
                                             <option value="3">Third Year</option>
                                         </select>
                                     </div>
-                                    <div class="col-12 col-md-4">
+                                    <!-- <div class="col-12 col-md-4">
                                         <select name="divi" id="divi" class="form-control">
                                             <option value="A">A</option>
                                             <option value="B">B</option>
                                             <option value="C">C</option>
                                         </select>
-                                    </div>
+                                    </div> -->
                             </div>
                             <div class="row form-group">
                                 <div class="col col-md-2">

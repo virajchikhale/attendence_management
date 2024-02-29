@@ -134,6 +134,14 @@ if($_SESSION["user"]==""){
                                             <input id="code" name="code" type="text" class="form-control" aria-required="true" aria-invalid="false" placeholder="Enter name of subject code">
                                         </div>
                                         <div class="form-row">
+                                            <select class="form-control" id="type" name="type" onchange=selectnone(this.id)>
+                                            <option value="none">Select type</option>
+                                                    <option value="1">Practical</option>
+                                                    <option value="0">Theory</option>
+                                            </select>
+                                        </div>
+                                        <br>
+                                        <div class="form-row">
                                             <select class="form-control" id="year" name="year" onchange=selectnone(this.id)>
                                             <option value="none">Select Year</option>
                                                     <option value="1">First Year</option>
@@ -267,6 +275,7 @@ if($_SESSION["user"]==""){
             var name = $('#name').val();
             var code = $('#code').val();
             var dept = $('#dept').val();
+            var type = $('#type').val();
             var year = $('#year').val();
             // alert(division);
             // alert(year);
@@ -278,6 +287,7 @@ if($_SESSION["user"]==""){
                 name:name,
                 code:code,
                 year:year,
+                type:type,
                 dept:dept
             },
             success:function(return_data) {
