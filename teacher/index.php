@@ -120,7 +120,7 @@ if($_SESSION["user"]==""){
                         <strong>Details</strong> For Attendence
                     </div>
                     <div class="card-body card-block" id="class_details">
-                        <form action="mark_attendence.php" method="post" class="form-horizontal">
+                        <form action="sub_select.php" method="post" class="form-horizontal">
                             <div class="row form-group">
                                     <div class="col col-md-2">
                                         <label for="select" class=" form-control-label">Class details</label>
@@ -140,7 +140,7 @@ if($_SESSION["user"]==""){
                                         </select>
                                     </div> -->
                             </div>
-                            <div class="row form-group">
+                            <!-- <div class="row form-group">
                                 <div class="col col-md-2">
                                     <label for="select" class=" form-control-label">Subject details</label>
                                 </div>
@@ -148,12 +148,13 @@ if($_SESSION["user"]==""){
                                     <select class="form-control" id="subject" name="subject" onchange=selectnone(this.id)>
                                     <option value="none">Select Subject</option>
                                     <?php
-                                        $res1 = mysql_query("select * from subject where department_id = '".$ur['department_id']."'");
+                                        $res1 = mysql_query("select * from subject where department_id = '".$ur['department_id']."' AND teacher_id = '".$ur['id']."'");
                                         $i = 1;
                                         while($row1 = mysql_fetch_array($res1))
                                                 { ?>
                                             <option value="<?php echo $row1['id']; ?>"><?php echo $row1['name'];?></option>
-                                        <?php $i++;} ?> 
+                                        <?php 
+                                        $i++;} ?> 
                                     </select>
                                 </div>
                                 <div class="col-12 col-md-3">
@@ -161,7 +162,7 @@ if($_SESSION["user"]==""){
                                 </div>
                                 <div class="col-12 col-md-3">
                                     <input type="time" id="time" name="time" class="form-control">
-                                </div>
+                                </div> -->
                             </div>
                     </div>
                     <div  id="start_button" class="card-footer">
@@ -185,7 +186,7 @@ if($_SESSION["user"]==""){
         </div>
 
     </div>
-
+<!-- 
     <script>
 
         var date = new Date();
@@ -196,7 +197,7 @@ if($_SESSION["user"]==""){
         document.getElementById('time').value = currentTime;
         let i = 1;
         
-    </script>
+    </script> -->
     <!-- Jquery JS-->
     <script src="vendor/jquery-3.2.1.min.js"></script>
     <!-- Bootstrap JS-->

@@ -24,18 +24,20 @@
                 <a href="stud_add.php">
                     <i class="fas fa-plus"></i>Add Student</a>
                 <!-- <span class="inbox-num">3</span> -->
-            </li>
+            </li><?php }
+            ?>
             <li>
                 <a href="attn_report.php">
                 <i class="fa-solid fa-book"></i>Attendence Report</a>
                 <!-- <span class="inbox-num">3</span> -->
-            </li><?php }
-            ?>
+            </li>
+            <?php if($ur['status']=='1'){?>
             <li>
                 <a href="stud_report.php">
                 <i class="fa-solid fa-graduation-cap"></i>Student Report</a>
                 <!-- <span class="inbox-num">3</span> -->
-            </li>
+            </li><?php }
+            ?>
         </ul>
     </nav>
 </div>

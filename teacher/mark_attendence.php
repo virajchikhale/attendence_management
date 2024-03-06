@@ -56,6 +56,8 @@ if(isset($_POST['Submit'])){
 <?php
 			include ('../includes/connection.php');	
 			$ur = mysql_fetch_array(mysql_query("select * from teacher_reg where email='".$_SESSION["user"]."'"));
+            // $sub = mysql_fetch_array(mysql_query("select * from subject where teacher_id='".$ur["id"]."' AND year='".$year."'"));
+            // $subject=$sub['id'];
             $sql1="select * from admin_reg";
             $sql2="select * from principal_reg";
             $sql3="select * from hod_reg";

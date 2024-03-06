@@ -8,31 +8,20 @@ if($_SESSION["user"]==""){
 if(isset($_POST['Submit'])){
     $f_date = $_POST['f_date'];
     $t_date = $_POST['t_date'];
+    $year=$_POST['year'];
+//     echo $f_date;
+//     echo $t_date;
+//     echo $year;
 }
 
 			include ('../includes/connection.php');	
 			$ur = mysql_fetch_array(mysql_query("select * from teacher_reg where email='".$_SESSION["user"]."'"));
-            $sql1="select * from admin_reg";
-            $sql2="select * from principal_reg";
-            $sql3="select * from hod_reg";
-            $sql4="select * from teacher_reg";
-            $sql5="select * from department";
-            $result1=mysql_query($sql1);
-            $result2=mysql_query($sql2);
-            $result3=mysql_query($sql3);
-            $result4=mysql_query($sql4);
-            $result5=mysql_query($sql5);
-            $admin=mysql_num_rows($result1);
-            $principal=mysql_num_rows($result2);
-            $hod=mysql_num_rows($result3);
-            $teacher=mysql_num_rows($result4);
-            $department=mysql_num_rows($result5);
 
-            
+// echo $ur["id"];
 $html='<table><tr><td>Enroll</td><td>Roll</td><td>Name</td>';
 
-$class = mysql_fetch_array(mysql_query("select * from class where teacher_id='".$ur["id"]."'"));
-$rees = mysql_query("select * from subject where year = '".$class["year"]."' && type = '0'");
+$class = mysql_fetch_array(mysql_query("select * from class where department_id='".$ur["department_id"]."' AND year='".$year."'"));
+$rees = mysql_query("select * from subject where teacher_id = '".$ur["id"]."' && year = '".$year."' && type = '0'");
 
 while($roow = mysql_fetch_array($rees))
 {
@@ -40,8 +29,8 @@ while($roow = mysql_fetch_array($rees))
 }
 	$html.='<td>Theory</td>';
 
-$class = mysql_fetch_array(mysql_query("select * from class where teacher_id='".$ur["id"]."'"));
-$rees = mysql_query("select * from subject where year = '".$class["year"]."' && type = '1'");
+$class = mysql_fetch_array(mysql_query("select * from class where  department_id = '".$ur["department_id"]."' AND year = '".$year."'"));
+$rees = mysql_query("select * from subject where teacher_id = '".$ur["id"]."' && year = '".$year."' && type = '1'");
 
 while($roow = mysql_fetch_array($rees))
 {

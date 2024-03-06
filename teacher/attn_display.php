@@ -8,6 +8,7 @@ if($_SESSION["user"]==""){
 if(isset($_POST['Submit'])){
     $f_date=$_POST['f_date'];
     $t_date=$_POST['t_date'];
+    $year=$_POST['year'];
 }
 ?>
 <!DOCTYPE html>
@@ -107,6 +108,7 @@ if(isset($_POST['Submit'])){
                                     <form action="attn_table.php" method="post" class="form-horizontal">
                                         <input type="hidden" id="f_date" name="f_date" value="<?php echo $f_date;?>">
                                         <input type="hidden" id="t_date" name="t_date" value="<?php echo $t_date;?>">
+                                        <input type="hidden" id="year" name="year" value="<?php echo $year;?>">
                                         <button type="Submit" name="Submit" class="btn btn-success">Export to Excel Sheet</button>
                                     </form>
                                 </div>
@@ -130,8 +132,8 @@ if(isset($_POST['Submit'])){
                                 <th>Roll</th>
                                 <th>Name</th>
                             <?php
-                                $class = mysql_fetch_array(mysql_query("select * from class where teacher_id='".$ur["id"]."'"));
-                                $rees = mysql_query("select * from subject where year = '".$class["year"]."' && type = '0'");
+                                $class = mysql_fetch_array(mysql_query("select * from class where department_id='".$ur["department_id"]."' AND year='".$year."'"));
+                                $rees = mysql_query("select * from subject where teacher_id = '".$ur["id"]."' && year = '".$year."' && type = '0'");
                                 while($roow = mysql_fetch_array($rees))
                                 {
                             ?>    
@@ -141,13 +143,18 @@ if(isset($_POST['Submit'])){
                             
                             <th>Theory</th>
                             <?php
-                                $class = mysql_fetch_array(mysql_query("select * from class where teacher_id='".$ur["id"]."'"));
-                                $rees = mysql_query("select * from subject where year = '".$class["year"]."' && type = '1'");
+                                $pract_count = mysql_num_rows(mysql_query("select * from subject where teacher_id = '".$ur["id"]."' && year = '".$year."' && type = '1'"));
+                                $class = mysql_fetch_array(mysql_query("select * from class where  department_id = '".$ur["department_id"]."' AND year = '".$year."'"));
+                                $rees = mysql_query("select * from subject where  teacher_id = '".$ur["id"]."' && year = '".$year."' && type = '1'");
                                 while($roow = mysql_fetch_array($rees))
                                 {
-                            ?>    
+                                    // if($pract_count > 0){
+                            ?>  
+                              
                             <th><?php echo $roow['name'];?></th>
-                            <?php }
+                            <?php 
+                                    // }
+                                }
                             ?>
                             <th>Practical</th>
                             <th>Total</th>
