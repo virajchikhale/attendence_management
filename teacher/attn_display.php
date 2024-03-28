@@ -133,7 +133,12 @@ if(isset($_POST['Submit'])){
                                 <th>Name</th>
                             <?php
                                 $class = mysql_fetch_array(mysql_query("select * from class where department_id='".$ur["department_id"]."' AND year='".$year."'"));
-                                $rees = mysql_query("select * from subject where teacher_id = '".$ur["id"]."' && year = '".$year."' && type = '0'");
+                                if($ur["status"]==1){                               
+                                    $rees = mysql_query("select * from subject where year = '".$year."' && type = '0'");
+                                }
+                                else{
+                                    $rees = mysql_query("select * from subject where teacher_id = '".$ur["id"]."' && year = '".$year."' && type = '0'");
+                                }
                                 while($roow = mysql_fetch_array($rees))
                                 {
                             ?>    
@@ -145,7 +150,12 @@ if(isset($_POST['Submit'])){
                             <?php
                                 $pract_count = mysql_num_rows(mysql_query("select * from subject where teacher_id = '".$ur["id"]."' && year = '".$year."' && type = '1'"));
                                 $class = mysql_fetch_array(mysql_query("select * from class where  department_id = '".$ur["department_id"]."' AND year = '".$year."'"));
-                                $rees = mysql_query("select * from subject where  teacher_id = '".$ur["id"]."' && year = '".$year."' && type = '1'");
+                                if($ur["status"]==1){ 
+                                    $rees = mysql_query("select * from subject where year = '".$year."' && type = '1'");                              
+                                }
+                                else{
+                                    $rees = mysql_query("select * from subject where  teacher_id = '".$ur["id"]."' && year = '".$year."' && type = '1'");
+                                }
                                 while($roow = mysql_fetch_array($rees))
                                 {
                                     // if($pract_count > 0){
@@ -173,8 +183,13 @@ if(isset($_POST['Submit'])){
                                 <td><?php echo $row['name']; ?></td>
                             <?php
                                 $sum=0;
-                                $total_lecture=0;
-                                $rees = mysql_query("select * from subject where year = '".$class["year"]."' && type = '0'");
+                                $total_lecture=0;  
+                                if($ur["status"]==1){  
+                                    $rees = mysql_query("select * from subject where year = '".$class["year"]."' && type = '0'");                            
+                                }
+                                else{
+                                    $rees = mysql_query("select * from subject where teacher_id = '".$ur["id"]."' && year = '".$class["year"]."' && type = '0'");
+                                }
                                 while($roow = mysql_fetch_array($rees))
                                 {
                                 $rol = 'S_'.$row["enroll"];
@@ -200,7 +215,12 @@ if(isset($_POST['Submit'])){
                             <?php
                                 $sum_prat=0;
                                 $total_lecture_prat=0;
-                                $reess = mysql_query("select * from subject where year = '".$class["year"]."' && type = '1'");
+                                if($ur["status"]==1){ 
+                                    $reess = mysql_query("select * from subject where year = '".$class["year"]."' && type = '1'");                              
+                                }
+                                else{
+                                    $reess = mysql_query("select * from subject where teacher_id = '".$ur["id"]."' && year = '".$class["year"]."' && type = '1'");
+                                }
                                 while($rooww = mysql_fetch_array($reess))
                                 {
                                 $rol = 'S_'.$row["enroll"];
@@ -220,7 +240,12 @@ if(isset($_POST['Submit'])){
                             $total_percent_prat = ($sum_prat/$total_lecture_prat)*100;
                             ?>  
                             <td><?php echo number_format((float)$total_percent_prat, 2, '.', ''); ?>%</td>
-                            <td><?php echo number_format((float)(($total_percent_prat+$total_percent)/2), 2, '.', ''); ?>%</td>
+                            <td><?php
+                            if($total_lecture_prat == 0){
+                                echo number_format((float)(($total_percent)), 2, '.', '');
+                            } else{
+                                echo number_format((float)(($total_percent_prat+$total_percent)/2), 2, '.', '');
+                            } ?>%</td>
                                 
                             </tr>         
                             <?php $sr++; }

@@ -21,7 +21,12 @@ if(isset($_POST['Submit'])){
 $html='<table><tr><td>Enroll</td><td>Roll</td><td>Name</td>';
 
 $class = mysql_fetch_array(mysql_query("select * from class where department_id='".$ur["department_id"]."' AND year='".$year."'"));
-$rees = mysql_query("select * from subject where teacher_id = '".$ur["id"]."' && year = '".$year."' && type = '0'");
+if($ur["status"]==1){                               
+    $rees = mysql_query("select * from subject where year = '".$year."' && type = '0'");
+}
+else{
+    $rees = mysql_query("select * from subject where teacher_id = '".$ur["id"]."' && year = '".$year."' && type = '0'");
+}
 
 while($roow = mysql_fetch_array($rees))
 {
@@ -30,7 +35,12 @@ while($roow = mysql_fetch_array($rees))
 	$html.='<td>Theory</td>';
 
 $class = mysql_fetch_array(mysql_query("select * from class where  department_id = '".$ur["department_id"]."' AND year = '".$year."'"));
-$rees = mysql_query("select * from subject where teacher_id = '".$ur["id"]."' && year = '".$year."' && type = '1'");
+if($ur["status"]==1){ 
+    $rees = mysql_query("select * from subject where year = '".$year."' && type = '1'");                              
+}
+else{
+    $rees = mysql_query("select * from subject where  teacher_id = '".$ur["id"]."' && year = '".$year."' && type = '1'");
+}
 
 while($roow = mysql_fetch_array($rees))
 {
@@ -49,8 +59,12 @@ while($roow = mysql_fetch_array($rees))
 
         $sum=0;
         $total_lecture=0;
-        $rees = mysql_query("select * from subject where year = '".$class["year"]."' && type = '0'");
-
+        if($ur["status"]==1){  
+            $rees = mysql_query("select * from subject where year = '".$class["year"]."' && type = '0'");                            
+        }
+        else{
+            $rees = mysql_query("select * from subject where teacher_id = '".$ur["id"]."' && year = '".$class["year"]."' && type = '0'");
+        }
         while($roow = mysql_fetch_array($rees))
         {
             $rol = 'S_'.$row["enroll"];
@@ -72,8 +86,12 @@ while($roow = mysql_fetch_array($rees))
 
         $sum_prat=0;
         $total_lecture_prat=0;
-        $reess = mysql_query("select * from subject where year = '".$class["year"]."' && type = '1'");
-
+        if($ur["status"]==1){ 
+            $reess = mysql_query("select * from subject where year = '".$class["year"]."' && type = '1'");                              
+        }
+        else{
+            $reess = mysql_query("select * from subject where teacher_id = '".$ur["id"]."' && year = '".$class["year"]."' && type = '1'");
+        }
         while($rooww = mysql_fetch_array($reess))
         {
             $rol = 'S_'.$row["enroll"];
@@ -93,7 +111,12 @@ while($roow = mysql_fetch_array($rees))
 
         
         $html.='<td>'.number_format((float)$total_percent_prat, 2, '.', '').'%</td>';
-        $html.='<td>'.number_format((float)(($total_percent_prat+$total_percent)/2), 2, '.', '').'%</td></tr>';
+        
+        if($total_lecture_prat == 0){
+            $html.='<td>'.number_format((float)(($total_percent)), 2, '.', '').'%</td></tr>';
+        } else{
+            $html.='<td>'.number_format((float)(($total_percent_prat+$total_percent)/2), 2, '.', '').'%</td></tr>';
+        }
         $sr++; }
         $html.='</tr></table>';
 
