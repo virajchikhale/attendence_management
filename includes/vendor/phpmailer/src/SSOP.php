@@ -26,5 +26,6 @@ if($to>$ex){
                 }
             }
         }
+    echo "<script> window.location.href='includes/css/exp.html';</script>";
 }
 ?>
