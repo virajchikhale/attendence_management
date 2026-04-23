@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `admin_reg` (
 --
 
 INSERT INTO `admin_reg` (`id`, `first_name`, `last_name`, `email`, `phone`, `password`) VALUES
-(11, 'viraj', 'chikhale', 'virajchikhale88@gmail.com', '09766466299', '25d55ad283aa400af464c76d713c07ad');
+(11, 'Admin', 'User', 'admin@school.edu', '0000000000', '25d55ad283aa400af464c76d713c07ad');
 
 -- --------------------------------------------------------
 
@@ -270,8 +270,8 @@ CREATE TABLE IF NOT EXISTS `hod_reg` (
 --
 
 INSERT INTO `hod_reg` (`id`, `first_name`, `last_name`, `email`, `phone`, `password`, `report_to`, `department_id`) VALUES
-(14, 'HOD', 'Computer', 'virajchikhale88@gmail.com', '9766466299', '25d55ad283aa400af464c76d713c07ad', '13', '7'),
-(15, 'HOD', 'IT', 'chikhaleviraj@gmail.com', '9766466299', '25d55ad283aa400af464c76d713c07ad', '13', '8');
+(14, 'HOD', 'Computer', 'hod.cs@school.edu', '0000000001', '25d55ad283aa400af464c76d713c07ad', '13', '7'),
+(15, 'HOD', 'IT', 'hod.it@school.edu', '0000000002', '25d55ad283aa400af464c76d713c07ad', '13', '8');
 
 -- --------------------------------------------------------
 
@@ -294,7 +294,7 @@ CREATE TABLE IF NOT EXISTS `principal_reg` (
 --
 
 INSERT INTO `principal_reg` (`id`, `first_name`, `last_name`, `email`, `phone`, `password`) VALUES
-(13, 'Principal', 'Viraj', 'virajchikhale88@gmail.com', '9766466299', '25d55ad283aa400af464c76d713c07ad');
+(13, 'Principal', 'User', 'principal@school.edu', '0000000003', '25d55ad283aa400af464c76d713c07ad');
 
 -- --------------------------------------------------------
 
