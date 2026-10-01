@@ -1,0 +1,8 @@
+Options -Indexes
+
+# Project files that must never be served
+<FilesMatch "(^\.|\.(md|sql|bak|yml|yaml|ini|lock)$|^Dockerfile$)">
+    Require all denied
+</FilesMatch>
+
+RedirectMatch 404 /\.git

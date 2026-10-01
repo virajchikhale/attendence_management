@@ -1,0 +1,60 @@
+# Student Attendance Management System (PHP + PostgreSQL)
+#   docker compose up -d --build
+#   App:     http://localhost:8080
+#   Mailpit: http://localhost:8025  (OTP / notification emails land here by default)
+#
+# Values come from a .env file next to this one (copy .env.example); every
+# variable has a default so the stack also starts without it.
+
+services:
+  app:
+    build: .
+    ports:
+      - "${APP_PORT:-8080}:80"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-student_management}
+      DB_USER: ${DB_USER:-attendance}
+      DB_PASSWORD: ${DB_PASSWORD:-attendance}
+      APP_TIMEZONE: ${APP_TIMEZONE:-Asia/Kolkata}
+      SMTP_HOST: ${SMTP_HOST:-mailpit}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_SECURE: ${SMTP_SECURE:-none}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-no-reply@attendance.local}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-Student Management}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME:-student_management}
+      POSTGRES_USER: ${DB_USER:-attendance}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-attendance}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      # Imported once, when the database volume is first created
+      - ./database/student_management.sql:/docker-entrypoint-initdb.d/student_management.sql:ro
+    healthcheck:
+      # Over TCP on purpose: the server only listens there once the first-run import has finished
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  # Local mail catcher. Point SMTP_* at a real server in .env to send real email.
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "${MAILPIT_PORT:-8025}:8025"
+    restart: unless-stopped
+
+volumes:
+  pg_data:

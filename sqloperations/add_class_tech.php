@@ -1,22 +1,28 @@
 <?php
-include('../includes/connection.php');
+require_once __DIR__ . '/../includes/auth.php';
+api_begin();
+$ur = require_login_api('hod');
 
-$teacher_id=$_POST['teacher_id'];
-$class_id=$_POST['class_id'];
+$teacher_id = post_id('teacher_id');
+$class_id = post_id('class_id');
 
-// $i="select * from hod_reg where department_id='".$department."'";
-// $x=mysql_fetch_array(mysql_query($i));
-$sqlinsert="UPDATE class SET teacher_id ='".$teacher_id."' where id='".$class_id."'";
-$sqlinsert1="UPDATE teacher_reg SET status ='1'  where id='".$teacher_id."'";
-
-$res1=mysql_query($sqlinsert1);
-$res=mysql_query($sqlinsert);
-
-        
-if($res) {
-        echo "0";
-        }
-else{
-        echo "1";
+$class = db_row(
+	'SELECT id FROM class WHERE id = ? AND department_id = ? AND teacher_id = 0',
+	array($class_id, $ur['department_id'])
+);
+if ($class === null) {
+	json_fail('This class already has a class teacher.');
 }
-?>
+$teacher = db_row(
+	'SELECT id FROM teacher_reg WHERE id = ? AND department_id = ? AND status = 0',
+	array($teacher_id, $ur['department_id'])
+);
+if ($teacher === null) {
+	json_fail('Please select a teacher to be assigned.');
+}
+
+$con->beginTransaction();
+db_query('UPDATE class SET teacher_id = ? WHERE id = ?', array($teacher['id'], $class['id']));
+db_query('UPDATE teacher_reg SET status = 1 WHERE id = ?', array($teacher['id']));
+$con->commit();
+json_out(true);

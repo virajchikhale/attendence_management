@@ -1,15 +1,8 @@
 <?php
-include('../includes/connection.php');
-//error_reporting('E_ALL');
-$code = $_POST['code'];
+require_once __DIR__ . '/../includes/auth.php';
+api_begin();
 
-        $sql="SELECT * from details where principal_verification='".$code."'";
-        $result=mysql_query($sql);
-        $cnt=mysql_num_rows($result);
-        if($cnt > 0) {
-                echo "0";
-                }
-        else{
-                echo "1";
-        }
-?>
+if (db_value('SELECT COUNT(*) FROM details WHERE principal_verification = ?', array(post('code'))) == 0) {
+	json_fail('Please enter vaild Admin code.');
+}
+json_out(true);

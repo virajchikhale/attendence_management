@@ -1,19 +1,25 @@
 <?php
-include('../includes/connection.php');
+require_once __DIR__ . '/../includes/auth.php';
+api_begin();
+$ur = require_login_api('hod');
 
-$teacher_id=$_POST['teacher_id'];
-$subject_id=$_POST['subject_id'];
+$teacher_id = post_id('teacher_id');
+$subject_id = post_id('subject_id');
 
-// $i="select * from hod_reg where department_id='".$department."'";
-// $x=mysql_fetch_array(mysql_query($i));
-$sqlinsert="UPDATE subject SET teacher_id ='".$teacher_id."' where id='".$subject_id."'";
-$res=mysql_query($sqlinsert);
-
-        
-if($res) {
-        echo "0";
-        }
-else{
-        echo "1";
+$subject = db_row(
+	'SELECT id FROM subject WHERE id = ? AND department_id = ? AND teacher_id = 0',
+	array($subject_id, $ur['department_id'])
+);
+if ($subject === null) {
+	json_fail('This subject already has a teacher.');
 }
-?>
+$teacher = db_row(
+	'SELECT id FROM teacher_reg WHERE id = ? AND department_id = ?',
+	array($teacher_id, $ur['department_id'])
+);
+if ($teacher === null) {
+	json_fail('Please select a teacher to be assigned.');
+}
+
+db_query('UPDATE subject SET teacher_id = ? WHERE id = ?', array($teacher['id'], $subject['id']));
+json_out(true);

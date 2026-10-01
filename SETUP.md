@@ -1,226 +1,173 @@
 # ⚙️ Setup Guide — Student Attendance Management System
 
-This document provides complete, step-by-step instructions to set up the project on your local machine.
+Two ways to run the project: **Docker** (recommended, nothing else to install) or a **manual** PHP + PostgreSQL stack.
 
 ---
 
-## 📋 Prerequisites
+## 🐳 Option A — Docker (recommended)
 
-Before you begin, ensure you have the following installed:
+### Prerequisites
 
-| Requirement | Version       | Notes                                             |
-|-------------|---------------|---------------------------------------------------|
-| XAMPP       | 5.6.x         | Must include **PHP 5.x** and **MySQL 5.6**        |
-| PHP         | 5.5 – 5.6     | Uses deprecated `mysql_*` extension (not in PHP 7+)|
-| MySQL       | 5.6           | Bundled with XAMPP                                |
-| Apache      | 2.4+          | Bundled with XAMPP                                |
-| Browser     | Any modern    | Chrome, Firefox, Edge, etc.                       |
+| Requirement    | Version | Notes                               |
+|----------------|---------|-------------------------------------|
+| Docker Engine  | 20.10+  | or Docker Desktop                   |
+| Docker Compose | v2      | `docker compose` (bundled with Docker Desktop) |
 
-> ⚠️ **Important:** This project uses the `mysql_*` PHP extension which was **removed in PHP 7.0**. You **must** use **PHP 5.x** (via XAMPP 5.6). Using a newer PHP version will cause fatal errors.
-
----
-
-## 🪜 Step-by-Step Installation
-
-### Step 1 — Download & Install XAMPP
-
-1. Go to the [XAMPP official download page](https://www.apachefriends.org/download.html)
-2. Download the **XAMPP 5.6.x** installer for your operating system
-3. Run the installer and follow the on-screen prompts
-4. Install XAMPP to the default location:
-   - **Windows:** `C:\xampp`
-   - **macOS:** `/Applications/XAMPP`
-   - **Linux:** `/opt/lampp`
-
----
-
-### Step 2 — Start Apache & MySQL
-
-1. Open the **XAMPP Control Panel**
-2. Click **Start** next to **Apache**
-3. Click **Start** next to **MySQL**
-4. Both services should show a green status indicator
-
-> If port 80 is in use, Apache may fail to start. Change the Apache port in `httpd.conf` or stop the conflicting service.
-
----
-
-### Step 3 — Clone or Copy the Project
-
-**Option A: Clone via Git**
+### Steps
 
 ```bash
-cd /path/to/xampp/htdocs
-git clone https://github.com/your-username/attendence_management.git
+git clone https://github.com/virajchikhale/attendence_management.git
+cd attendence_management
+
+cp .env.example .env        # optional: change ports / passwords
+docker compose up -d --build
 ```
 
-**Option B: Manual Copy**
+| Service  | URL                     | What it is                                        |
+|----------|-------------------------|---------------------------------------------------|
+| App      | http://localhost:8080   | The attendance system                             |
+| Mailpit  | http://localhost:8025   | Inbox that catches every email the app sends (OTP codes land here) |
+| Database | internal only (`db`)    | PostgreSQL 16, data kept in the `pg_data` volume  |
 
-1. Download the project as a ZIP
-2. Extract it
-3. Move/copy the `attendence_management` folder to your XAMPP `htdocs` directory:
-   - **Windows:** `C:\xampp\htdocs\attendence_management`
-   - **macOS:** `/Applications/XAMPP/htdocs/attendence_management`
-   - **Linux:** `/opt/lampp/htdocs/attendence_management`
+The sample database (`database/student_management.sql`) is imported automatically the **first** time the database volume is created.
+
+### Useful commands
+
+```bash
+docker compose logs -f app      # PHP / Apache log (errors are logged here, not shown in the browser)
+docker compose down             # stop, keep data
+docker compose down -v          # stop and delete the database volume (next "up" re-imports the sample data)
+docker compose up -d --build    # rebuild after changing code
+docker compose exec db psql -U attendance student_management   # SQL prompt
+```
+
+### Configuration (`.env`)
+
+| Variable            | Default                      | Description                                  |
+|---------------------|------------------------------|----------------------------------------------|
+| `APP_PORT`          | `8080`                       | Host port for the app                        |
+| `APP_TIMEZONE`      | `Asia/Kolkata`               | PHP timezone                                 |
+| `DB_NAME`           | `student_management`         | Database name                                |
+| `DB_USER`           | `attendance`                 | Database user used by the app                |
+| `DB_PASSWORD`       | `attendance`                 | Its password — **change for real use**       |
+| `MAILPIT_PORT`      | `8025`                       | Host port for the Mailpit inbox              |
+| `SMTP_HOST`         | `mailpit`                    | SMTP server                                  |
+| `SMTP_PORT`         | `1025`                       | SMTP port                                    |
+| `SMTP_SECURE`       | `none`                       | `tls`, `ssl` or `none`                       |
+| `SMTP_USER` / `SMTP_PASSWORD` | empty              | SMTP login, if the server needs one          |
+| `MAIL_FROM`         | `no-reply@attendance.local`  | Sender address                               |
+| `MAIL_FROM_NAME`    | `Student Management`         | Sender name                                  |
+
+> The database name, user and password are only applied when the volume is first created. To change them later, run `docker compose down -v` first (this deletes the data) or change them inside PostgreSQL.
+
+### Sending real email (e.g. Gmail)
+
+Set these in `.env` and run `docker compose up -d`:
+
+```env
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=tls
+SMTP_USER=you@gmail.com
+SMTP_PASSWORD=your-app-password
+MAIL_FROM=you@gmail.com
+```
+
+For Gmail, enable 2-Factor Authentication and create an **App Password** at [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords). Never commit `.env` — it is git-ignored.
 
 ---
 
-### Step 4 — Import the Database
+## 🧰 Option B — Manual setup
 
-1. Open your browser and go to:
-   ```
-   http://localhost/phpmyadmin
-   ```
+### Prerequisites
 
-2. Click **New** in the left sidebar to create a new database
+| Requirement | Version      | Notes                                   |
+|-------------|--------------|-----------------------------------------|
+| PHP         | 8.1 or newer | with the `pdo_pgsql` extension          |
+| PostgreSQL  | 12 or newer  |                                         |
+| Apache      | 2.4+         | `.htaccess` support (`AllowOverride All`) recommended |
 
-3. Enter the database name:
-   ```
-   student_management
-   ```
-   Set collation to `latin1_swedish_ci`, then click **Create**
+### Steps
 
-4. With the `student_management` database selected, click the **Import** tab
+1. Copy the project into your web root (e.g. `htdocs/attendence_management`).
+2. Create the database and import the schema and sample data:
 
-5. Click **Choose File** and navigate to:
-   ```
-   attendence_management/database/student_management.sql
+   ```bash
+   createdb -U postgres student_management
+   psql -U postgres -d student_management -f database/student_management.sql
    ```
 
-6. Click **Go** to import the database
+3. The app connects to `localhost:5432` as `postgres` with an empty password by default. To use anything else, set the `DB_*` environment variables listed above for the web server, e.g. in Apache:
 
-7. Verify that the following tables were created:
-   - `admin_reg`
-   - `attendence`
-   - `class`
-   - `department`
-   - `details`
-   - `hod_reg`
-   - `principal_reg`
-   - `student`
-   - `subject`
-   - `teacher_reg`
-
----
-
-### Step 5 — Configure the Database Connection
-
-Open the database connection file:
-
-```
-attendence_management/includes/connection.php
-```
-
-Update the connection credentials to match your environment:
-
-```php
-<?php
-$con = mysql_connect("localhost", "root", "");
-// Parameters: host, username, password
-// Default XAMPP credentials: host=localhost, user=root, password=(empty)
-
-mysql_select_db("student_management", $con);
-?>
-```
-
-| Parameter | Default Value         | Description             |
-|-----------|-----------------------|-------------------------|
-| Host      | `localhost`           | MySQL server host       |
-| Username  | `root`                | MySQL username          |
-| Password  | `""` (empty string)   | MySQL password (blank for default XAMPP) |
-| Database  | `student_management`  | The database name       |
-
-> If you have set a custom MySQL root password in XAMPP, update the password field accordingly.
-
----
-
-### Step 6 — Configure PHPMailer (Optional — for Forgot Password)
-
-The forgot password feature uses **PHPMailer** with SMTP. To enable it:
-
-1. Open the PHPMailer configuration file located in:
-   ```
-   includes/vendor/phpmailer/src/SSOP.php
+   ```apache
+   SetEnv DB_HOST 127.0.0.1
+   SetEnv DB_PORT 5432
+   SetEnv DB_USER attendance
+   SetEnv DB_PASSWORD secret
+   SetEnv DB_NAME student_management
    ```
 
-2. Update the SMTP credentials with your email provider details:
+   The database user must own the tables: adding a student adds a column to the `attendence` table.
 
-   ```php
-   $mail->Host = 'smtp.gmail.com';       // SMTP server
-   $mail->Username = 'your@gmail.com';   // Sender email
-   $mail->Password = 'your-app-password'; // App password (not your login password)
-   $mail->Port = 587;
-   ```
+4. Email (OTP for registration and password reset) needs the `SMTP_*` variables set the same way. Without `SMTP_HOST`, no email is sent and OTP steps cannot be completed.
+5. Open `http://localhost/attendence_management/`.
 
-3. For Gmail, you must:
-   - Enable **2-Factor Authentication** on your Google account
-   - Generate an **App Password** from [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
-   - Use that App Password in the config above
+### Coming from the old MySQL database
 
-> If you don't need password recovery, you can skip this step. All other features will work normally.
+The app no longer connects to MySQL. Data in an existing MySQL database is **not** migrated automatically. The PostgreSQL schema differs from the old dump in a few column types, so load the new schema first and copy the rows across (a tool such as [pgloader](https://pgloader.io/) in data-only mode can do this):
 
----
+| Column                                             | MySQL          | PostgreSQL                 |
+|----------------------------------------------------|----------------|----------------------------|
+| `attendence.date`, `attendence.time`               | varchar, time(6) | `date`, `time`           |
+| `attendence.subject`                               | varchar        | `integer`                  |
+| `hod_reg.department_id`, `teacher_reg.department_id` | text         | `integer`                  |
+| `hod_reg.report_to`, `teacher_reg.report_to`       | text           | `integer` (empty → `NULL` for teachers) |
+| `attendence.S_<enrollment no>`                     | case-insensitive names | quoted, case-sensitive names |
 
-### Step 7 — Launch the Application
-
-Open your browser and navigate to:
-
-```
-http://localhost/attendence_management/
-```
-
-You should see the **role selection landing page** with buttons for:
-- **Principal Login**
-- **HOD Login**
-- **Teacher Login**
+Existing MD5 password hashes keep working: each account is upgraded to a modern hash the next time it logs in.
 
 ---
 
 ## 🔑 Default Login Credentials
 
-The database dump includes sample data with the following pre-loaded accounts:
+The sample data includes these accounts (password `12345678` for all):
 
-| Role        | Email                       | Password   |
-|-------------|-----------------------------|------------|
-| Principal   | principal@school.edu        | `12345678` |
-| HOD (CS)    | hod.cs@school.edu           | `12345678` |
-| HOD (IT)    | hod.it@school.edu           | `12345678` |
-| Teacher     | teacher@school.edu          | `12345678` |
+| Role                    | Email                        |
+|-------------------------|------------------------------|
+| Principal               | principal@school.edu         |
+| HOD (Computer)          | hod.cs@school.edu            |
+| HOD (IT)                | hod.it@school.edu            |
+| Teacher (class teacher) | john.doe@example.com         |
+| Teacher                 | michael.brown@example.com    |
 
-> ⚠️ Change these credentials immediately after your first login for security.
+> ⚠️ Change these credentials before using the system for real.
 
 ---
 
 ## 🔄 Registration Flow (New Users)
 
-If you want to register new users instead of using sample accounts:
-
-1. From the landing page, click **"Create your Account"**
-2. Select the role you want to register (**Principal**, **HOD**, or **Teacher**)
-3. Fill in the registration form
-4. **Verification Code Required:** You will be asked for a **Principal Verification Code**
-   - The default code stored in the `details` table is: **`ABCD`**
-   - This can be updated directly in the database via phpMyAdmin
+1. From the landing page, click **"Create your Account"** and pick a role.
+2. Fill in your details. HODs pick a department that has no HOD yet; teachers pick their department.
+3. **Principal only:** enter the **Admin Verification Code** — the value stored in the `details` table (default `ABCD`).
+4. On the last step click **Send OTP**, read the code from your inbox (Mailpit at http://localhost:8025 in the default Docker setup), enter it and click **Register**.
 
 ---
 
 ## 🗂️ Suggested First-Time Setup Order
 
-Follow this order after logging in with the sample data or fresh registrations:
-
 ```
 1. Login as Principal
-   └── Add / verify Departments
+   └── Add Departments
 
-2. Login as HOD (for each department)
-   └── Add Classes (Year 1, Year 2, Year 3)
-   └── Assign Class Teachers to each class
+2. Register / login as HOD (one per department)
+   └── Add Classes (First, Second, Third Year)
+   └── Assign a Class Teacher to each class
    └── Add Subjects and assign Subject Teachers
 
 3. Login as Teacher
-   └── Add Students to your class
-   └── Start marking Attendance
-   └── View Reports
+   └── Class teacher: add Students to the class
+   └── Mark Attendance for your subjects
+   └── View / export Reports
 ```
 
 ---
@@ -229,43 +176,38 @@ Follow this order after logging in with the sample data or fresh registrations:
 
 | Problem | Likely Cause | Solution |
 |---|---|---|
-| Blank page / PHP errors | Wrong PHP version | Use XAMPP with PHP 5.x |
-| `mysql_connect()` undefined | PHP 7+ not supported | Downgrade to PHP 5.6 |
-| DB connection error | Wrong credentials | Check `includes/connection.php` |
-| Apache won't start | Port 80 conflict | Change port or stop conflicting process |
-| Import fails in phpMyAdmin | Wrong DB name | Ensure database is named `student_management` |
-| Emails not sending | SMTP misconfigured | Verify App Password and SMTP settings |
-| Session not persisting | `session_start()` missing | Ensure not overriding session config |
+| "could not connect to its database" | DB not ready or wrong credentials | `docker compose ps` (db must be *healthy*); check `DB_*` values |
+| Database from an earlier MariaDB version of this stack | Old `db_data` volume is no longer used | The PostgreSQL data lives in a new `pg_data` volume and starts from the sample data; remove the old volume with `docker volume rm` once you no longer need it |
+| Port already in use | 8080 / 8025 taken | Change `APP_PORT` / `MAILPIT_PORT` in `.env` |
+| No OTP email | SMTP not reachable | Check Mailpit at :8025, or your `SMTP_*` settings; see `docker compose logs app` |
+| Blank page / error 500 | PHP error | Errors are logged, not displayed: `docker compose logs app` |
+| Changed `DB_PASSWORD` and app cannot connect | Password only applied on first start | `docker compose down -v` and start again (deletes data) |
+| Sample data missing | Volume created before the dump was mounted | `docker compose down -v && docker compose up -d` |
 
 ---
 
-## 📁 File Permissions (Linux/macOS)
+## 🔒 Security Notes
 
-If running on Linux or macOS, ensure the project directory has appropriate permissions:
+Already in place:
 
-```bash
-chmod -R 755 /opt/lampp/htdocs/attendence_management
-```
+- All SQL goes through PDO prepared statements
+- Passwords hashed with `password_hash()` (legacy MD5 hashes upgraded on login)
+- OTP generated and verified on the server, limited attempts, 10 minute lifetime
+- Every portal page and AJAX handler checks the signed-in role
+- Database and mail credentials come from environment variables, not source code
 
----
+Still recommended before going live:
 
-## 🔒 Security Recommendations (Before Going Live)
-
-> This project was built for academic/demonstration purposes. Before deploying to a production environment:
-
-- [ ] Migrate from `mysql_*` to `PDO` or `mysqli` with prepared statements (prevents SQL injection)
-- [ ] Replace MD5 password hashing with `password_hash()` / `password_verify()`
-- [ ] Enable HTTPS via SSL certificate
-- [ ] Move `connection.php` credentials to environment variables
-- [ ] Remove default/sample database credentials
-- [ ] Add CSRF protection to all forms
-- [ ] Restrict PHPMailer SMTP credentials using environment variables
+- [ ] Serve over HTTPS (reverse proxy in front of the container)
+- [ ] Change the default database passwords and the sample account passwords
+- [ ] Change the principal verification code in the `details` table
+- [ ] Add CSRF tokens to forms (session cookies are already `SameSite=Lax`)
 
 ---
 
 ## 📞 Support
 
-If you encounter any issues not covered in this guide, feel free to open an [Issue](https://github.com/your-username/attendence_management/issues) on the GitHub repository.
+If you encounter any issues not covered in this guide, feel free to open an [Issue](https://github.com/virajchikhale/attendence_management/issues) on the GitHub repository.
 
 ---
 
