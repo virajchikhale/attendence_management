@@ -32,10 +32,10 @@ The system supports full department, class, subject, and student lifecycle manag
 
 ### 🔐 Authentication & Security
 - Role-based login for **Principal**, **HOD**, and **Teacher**
-- Session-based authentication with redirect guards
-- MD5-hashed passwords stored in the database
-- Forgot password flow via email (PHPMailer)
-- Principal verification code required during HOD/Teacher registration
+- Session-based authentication; every page and AJAX handler checks the signed-in role
+- Passwords stored with `password_hash()` (older MD5 hashes are upgraded on login)
+- Email OTP for registration and forgot password, verified on the server (PHPMailer)
+- Admin verification code required during Principal registration
 
 ### 🏛️ Principal Portal
 - Add and manage **Departments**
@@ -50,14 +50,15 @@ The system supports full department, class, subject, and student lifecycle manag
 
 ### 👩‍🏫 Teacher Portal
 - Select class and initiate an **Attendance Session**
-- Mark attendance for up to **100 students** per session (Present/Absent)
+- Mark attendance student by student (Present/Absent, with Space / Enter shortcuts)
 - View **Attendance Records** per subject and date
-- Generate **Attendance Reports** with student-wise percentage
+- Generate **Attendance Reports** with student-wise percentage, exportable as a spreadsheet (CSV)
 - **Add Students** to classes (roll no., enrollment no., name, phone, email)
 - View **Student Reports**
 
 ### 📧 Email Integration
-- PHPMailer integration for password recovery emails
+- PHPMailer integration for OTP, welcome and password-change emails
+- SMTP settings come from environment variables; the Docker setup includes a local mail catcher (Mailpit)
 
 ---
 
@@ -65,15 +66,14 @@ The system supports full department, class, subject, and student lifecycle manag
 
 | Layer        | Technology                                    |
 |--------------|-----------------------------------------------|
-| Backend      | PHP 5.5 (legacy `mysql_*` extension)          |
-| Database     | MySQL 5.6                                     |
+| Backend      | PHP 8.3 (PDO, prepared statements)            |
+| Database     | MariaDB 11.4 (MySQL 5.7+ also works)          |
 | Frontend     | HTML5, CSS3, Bootstrap 4.1                    |
-| JavaScript   | jQuery 3.2.1, AJAX                            |
-| UI Libraries | Font Awesome 4.7 & 5, Select2, Animsition, Chart.js, Perfect Scrollbar |
+| JavaScript   | jQuery 3, AJAX (JSON)                         |
+| UI Libraries | Font Awesome 4.7, Select2, Animsition, Chart.js, Perfect Scrollbar |
 | Email        | PHPMailer                                     |
-| Server       | Apache (XAMPP / WAMP recommended)             |
-
-> ⚠️ **Note:** This project uses the deprecated `mysql_*` PHP extension, which requires **PHP 5.x**. PHP 7+ dropped support for this extension. Use XAMPP with PHP 5.x or configure accordingly.
+| Server       | Apache (Docker image `php:8.3-apache`)        |
+| Deployment   | Docker Compose (app + database + mail catcher) |
 
 ---
 
@@ -83,60 +83,45 @@ The system supports full department, class, subject, and student lifecycle manag
 attendence_management/
 │
 ├── index.php                  # Landing page — role selection (Principal / HOD / Teacher)
+├── logout.php                 # Ends the session
+├── Dockerfile                 # PHP 8.3 + Apache image
+├── docker-compose.yml         # App + MariaDB + Mailpit
+├── .env.example               # Configuration template
 │
-├── login/
-│   ├── principal_login.php    # Principal login form & authentication
-│   ├── hod_login.php          # HOD login form & authentication
-│   └── teacher_login.php      # Teacher login form & authentication
-│
-├── registration/
-│   ├── index.php              # Registration role selection
-│   ├── principal_reg.php      # Principal registration form
-│   ├── hod_reg.php            # HOD registration form
-│   └── teacher_reg.php        # Teacher registration form
+├── login/                     # <role>_login.php pages (shared code in _login.php)
+├── registration/              # Role chooser + <role>_reg.php wizards (shared code in _register.php)
+├── forgot_password/           # <role>_forgot.php pages (shared code in _forgot.php)
 │
 ├── principal/
-│   ├── index.php              # Principal dashboard — manage departments
-│   └── admin_includes/        # Sidebar, header, footer partials
+│   └── index.php              # Principal dashboard — manage departments
 │
 ├── hod/
-│   ├── index.php              # HOD dashboard — manage classes
-│   ├── subject_add.php        # Add and assign subjects to teachers
-│   └── admin_includes/        # Sidebar, header, footer partials
+│   ├── index.php              # HOD dashboard — manage classes, assign class teachers
+│   └── subject_add.php        # Add subjects and assign them to teachers
 │
 ├── teacher/
-│   ├── index.php              # Teacher dashboard — start attendance
-│   ├── sub_select.php         # Subject selection for attendance
+│   ├── index.php              # Choose subject, date and time for attendance
 │   ├── mark_attendence.php    # Mark attendance per student
-│   ├── attn_display.php       # View attendance records
-│   ├── attn_report.php        # Attendance report generation
-│   ├── attn_table.php         # Attendance table view
-│   ├── stud_add.php           # Add student to class
-│   └── stud_report.php        # Student report view
+│   ├── attn_report.php        # Choose dates / year for a report
+│   ├── attn_display.php       # Attendance report
+│   ├── attn_table.php         # Report export (CSV)
+│   ├── stud_add.php           # Add student to class (class teacher)
+│   └── stud_report.php        # Student list, edit, delete (class teacher)
 │
-├── sqloperations/             # AJAX backend handlers (PHP scripts)
-│   ├── login.php
-│   ├── insert_reg.php
-│   ├── insert_dept.php
-│   ├── insert_class.php
-│   ├── insert_subject.php
-│   ├── insert_student.php
-│   ├── mark_attendence.php
-│   ├── get_stud_data.php
-│   ├── add_class_tech.php
-│   ├── add_subject_tech.php
-│   └── update_reg.php
+├── sqloperations/             # AJAX backend handlers (JSON responses)
+├── validation/                # AJAX checks: email, phone, admin code, OTP
 │
 ├── includes/
-│   ├── connection.php         # MySQL database connection
-│   ├── css/                   # Global styles
-│   ├── js/                    # Global scripts
-│   ├── images/                # Shared images/icons
+│   ├── connection.php         # Database connection (PDO) + query helpers
+│   ├── auth.php               # Session, login guards, shared helpers
+│   ├── otp.php                # Email OTP (server side)
+│   ├── attendance_report.php  # Report calculation
+│   ├── layout/                # Shared page layouts (login pages, portals)
+│   ├── css/  js/  images/     # Shared styles (app.css), scripts (app.js), images
 │   └── vendor/                # Third-party libraries (Bootstrap, jQuery, etc.)
 │
-├── forgot_password/           # Forgot password flow
-├── email/                     # Email templates / handlers
-├── validation/                # Client-side validation scripts
+├── email/                     # Mailer (PHPMailer)
+├── docker/                    # PHP settings used by the Docker image
 │
 └── database/
     └── student_management.sql # Full database dump (tables + sample data)
@@ -158,7 +143,7 @@ Database name: **`student_management`**
 | `class`         | Classes mapped to department, year, and class teacher     |
 | `subject`       | Subjects with code, name, type, department, teacher, year |
 | `student`       | Student records (roll, enrollment, name, phone, email)    |
-| `attendence`    | Per-session attendance records for up to 100 students     |
+| `attendence`    | One row per lecture, one column per student (`S_<enrollment no>`) |
 | `details`       | System configuration (e.g., principal verification code)  |
 
 ### Key Relationships
@@ -196,12 +181,17 @@ Department  ──< Class ──< Student
 
 See **[SETUP.md](SETUP.md)** for detailed step-by-step installation instructions.
 
-**Quick summary:**
-1. Install XAMPP (PHP 5.x compatible)
-2. Clone/copy the project to `htdocs/attendence_management`
-3. Import `database/student_management.sql` in phpMyAdmin
-4. Configure `includes/connection.php` with your DB credentials
-5. Visit `http://localhost/attendence_management/`
+**Quick start with Docker:**
+
+```bash
+cp .env.example .env
+docker compose up -d --build
+```
+
+- App: http://localhost:8080
+- Mail inbox (OTP emails): http://localhost:8025
+
+The sample database is imported automatically on first start. A manual (XAMPP / LAMP) setup is described in SETUP.md.
 
 ---
 
@@ -209,14 +199,15 @@ See **[SETUP.md](SETUP.md)** for detailed step-by-step installation instructions
 
 > These are pre-loaded in the sample database dump. Change them after first login.
 
-| Role      | Email                         | Password   |
-|-----------|-------------------------------|------------|
-| Principal | principal@school.edu          | `12345678` |
-| HOD (CS)  | hod.cs@school.edu             | `12345678` |
-| HOD (IT)  | hod.it@school.edu             | `12345678` |
-| Teacher   | teacher@school.edu            | `12345678` |
+| Role                    | Email                     | Password   |
+|-------------------------|---------------------------|------------|
+| Principal               | principal@school.edu      | `12345678` |
+| HOD (Computer)          | hod.cs@school.edu         | `12345678` |
+| HOD (IT)                | hod.it@school.edu         | `12345678` |
+| Teacher (class teacher) | john.doe@example.com      | `12345678` |
+| Teacher                 | michael.brown@example.com | `12345678` |
 
-> 🔐 Passwords are stored as MD5 hashes. The hash `25d55ad283aa400af464c76d713c07ad` corresponds to `12345678`. Update all credentials after first login.
+> 🔐 The sample accounts ship with legacy MD5 hashes that are replaced by a `password_hash()` hash on first login. Change all credentials before real use.
 
 ---
 
