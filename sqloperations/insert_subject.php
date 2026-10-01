@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . '/../includes/auth.php';
-include(__DIR__ . '/../includes/vendor/phpmailer/src/SSOP.php');
 api_begin();
 $ur = require_login_api('hod');
 

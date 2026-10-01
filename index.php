@@ -35,8 +35,6 @@ include(__DIR__ . '/includes/layout/auth_top.php');
 					</div>
 				</div>
 <?php include(__DIR__ . '/includes/layout/auth_bottom.php'); ?>
-	<?php include('includes/vendor/phpmailer/src/SSOP.php');
-?>
 
 </body>
 
