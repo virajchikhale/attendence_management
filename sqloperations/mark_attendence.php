@@ -9,7 +9,7 @@ if ($type == "fill") {
 	// Opens the attendance sheet for one lecture and returns its id.
 	$date = post('date');
 	$time = post('time');
-	$subject = db_row('SELECT id FROM subject WHERE id = ? AND teacher_id = ?', array(post('subject'), $ur['id']));
+	$subject = db_row('SELECT id FROM subject WHERE id = ? AND teacher_id = ?', array(post_id('subject'), $ur['id']));
 
 	if ($subject === null) {
 		json_fail('Please select one of your subjects.');
@@ -23,8 +23,10 @@ if ($type == "fill") {
 		array($date, $time . ':00', $subject['id'])
 	);
 	if ($id === null) {
-		db_query('INSERT INTO attendence(date, time, subject) VALUES(?, ?, ?)', array($date, $time . ':00', $subject['id']));
-		$id = $con->lastInsertId();
+		$id = db_value(
+			'INSERT INTO attendence(date, time, subject) VALUES(?, ?, ?) RETURNING id',
+			array($date, $time . ':00', $subject['id'])
+		);
 	}
 	json_out(true, array('id' => (int) $id));
 } else if ($type == "attn") {
@@ -38,7 +40,7 @@ if ($type == "fill") {
 	$sheet = db_row(
 		'SELECT a.id, s.department_id, s.year FROM attendence a JOIN subject s ON s.id = a.subject
 		 WHERE a.id = ? AND s.teacher_id = ?',
-		array(post('id'), $ur['id'])
+		array(post_id('id'), $ur['id'])
 	);
 	if ($sheet === null) {
 		json_fail('This attendence sheet was not found. Please start again.');
@@ -52,7 +54,7 @@ if ($type == "fill") {
 		json_fail('This student is not in the class.');
 	}
 
-	db_query('UPDATE attendence SET `' . attendance_column($enroll) . '` = ? WHERE id = ?', array($value, $sheet['id']));
+	db_query('UPDATE attendence SET ' . attendance_column_sql($enroll) . ' = ? WHERE id = ?', array($value, $sheet['id']));
 	json_out(true);
 }
 

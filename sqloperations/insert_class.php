@@ -13,7 +13,7 @@ if (db_value('SELECT COUNT(*) FROM class WHERE department_id = ? AND year = ?', 
 }
 
 db_query(
-	"INSERT INTO class(year, divi, department_id, teacher_id) VALUES(?, 'A', ?, '0')",
+	"INSERT INTO class(year, divi, department_id, teacher_id) VALUES(?, 'A', ?, 0)",
 	array($year, $ur['department_id'])
 );
 json_out(true);

@@ -7,8 +7,8 @@ $lname = post('lname');
 $email = post('email');
 $phoneno = post('phoneno');
 $password = isset($_POST['password']) && is_string($_POST['password']) ? $_POST['password'] : '';
-$report_to = post('report_to');
-$department = post('department');
+$report_to = post_id('report_to');
+$department = post_id('department');
 $table = post('table');
 $role = role_for_table($table);
 
@@ -43,7 +43,7 @@ if ($table == "teacher_reg") {
 	$x = db_row('SELECT id FROM hod_reg WHERE department_id = ?', array($department));
 	db_query(
 		'INSERT INTO teacher_reg(first_name, last_name, email, phone, password, report_to, department_id, status) VALUES(?, ?, ?, ?, ?, ?, ?, 0)',
-		array($fname, $lname, $email, $phoneno, $hash, $x === null ? '' : $x['id'], $department)
+		array($fname, $lname, $email, $phoneno, $hash, $x === null ? null : $x['id'], $department)
 	);
 } else if ($table == "principal_reg") {
 	if (db_value('SELECT COUNT(*) FROM details WHERE principal_verification = ?', array(post('code'))) == 0) {
@@ -54,14 +54,14 @@ if ($table == "teacher_reg") {
 		array($fname, $lname, $email, $phoneno, $hash)
 	);
 } else if ($table == "hod_reg") {
-	if (db_row("SELECT id FROM department WHERE id = ? AND status = '0'", array($department)) === null) {
+	if (db_row('SELECT id FROM department WHERE id = ? AND status = 0', array($department)) === null) {
 		json_fail('Please select a department that has no HOD yet.');
 	}
 	if (db_row('SELECT id FROM principal_reg WHERE id = ?', array($report_to)) === null) {
 		json_fail('Please select whom you report to.');
 	}
 	$con->beginTransaction();
-	db_query("UPDATE department SET status = '1' WHERE id = ?", array($department));
+	db_query('UPDATE department SET status = 1 WHERE id = ?', array($department));
 	db_query(
 		'INSERT INTO hod_reg(first_name, last_name, email, phone, password, report_to, department_id) VALUES(?, ?, ?, ?, ?, ?, ?)',
 		array($fname, $lname, $email, $phoneno, $hash, $report_to, $department)

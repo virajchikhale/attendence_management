@@ -1,4 +1,4 @@
-# Student Attendance Management System
+# Student Attendance Management System (PHP + PostgreSQL)
 #   docker compose up -d --build
 #   App:     http://localhost:8080
 #   Mailpit: http://localhost:8025  (OTP / notification emails land here by default)
@@ -13,7 +13,7 @@ services:
       - "${APP_PORT:-8080}:80"
     environment:
       DB_HOST: db
-      DB_PORT: 3306
+      DB_PORT: 5432
       DB_NAME: ${DB_NAME:-student_management}
       DB_USER: ${DB_USER:-attendance}
       DB_PASSWORD: ${DB_PASSWORD:-attendance}
@@ -31,18 +31,18 @@ services:
     restart: unless-stopped
 
   db:
-    image: mariadb:11.4
+    image: postgres:16-alpine
     environment:
-      MARIADB_DATABASE: ${DB_NAME:-student_management}
-      MARIADB_USER: ${DB_USER:-attendance}
-      MARIADB_PASSWORD: ${DB_PASSWORD:-attendance}
-      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-change-me-root}
+      POSTGRES_DB: ${DB_NAME:-student_management}
+      POSTGRES_USER: ${DB_USER:-attendance}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-attendance}
     volumes:
-      - db_data:/var/lib/mysql
+      - pg_data:/var/lib/postgresql/data
       # Imported once, when the database volume is first created
       - ./database/student_management.sql:/docker-entrypoint-initdb.d/student_management.sql:ro
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      # Over TCP on purpose: the server only listens there once the first-run import has finished
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -57,4 +57,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  db_data:
+  pg_data:

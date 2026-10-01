@@ -12,5 +12,5 @@ if (db_value('SELECT COUNT(*) FROM department WHERE LOWER(name) = LOWER(?)', arr
 	json_fail('This department already exists.');
 }
 
-db_query("INSERT INTO department(name, status) VALUES(?, '0')", array($dept));
+db_query('INSERT INTO department(name, status) VALUES(?, 0)', array($dept));
 json_out(true);

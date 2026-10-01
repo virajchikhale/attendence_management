@@ -37,7 +37,7 @@ if (db_value('SELECT COUNT(*) FROM student WHERE class_id = ? AND roll = ?', arr
 }
 
 if (!attendance_column_exists($enroll)) {
-	db_query('ALTER TABLE attendence ADD `' . attendance_column($enroll) . "` int(11) NOT NULL DEFAULT '-1'");
+	db_query('ALTER TABLE attendence ADD ' . attendance_column_sql($enroll) . ' integer NOT NULL DEFAULT -1');
 }
 db_query(
 	'INSERT INTO student(roll, enroll, name, phone, email, class_id) VALUES(?, ?, ?, ?, ?, ?)',

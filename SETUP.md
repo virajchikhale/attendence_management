@@ -1,6 +1,6 @@
 # ⚙️ Setup Guide — Student Attendance Management System
 
-Two ways to run the project: **Docker** (recommended, nothing else to install) or a **manual** PHP + MySQL/MariaDB stack.
+Two ways to run the project: **Docker** (recommended, nothing else to install) or a **manual** PHP + PostgreSQL stack.
 
 ---
 
@@ -27,7 +27,7 @@ docker compose up -d --build
 |----------|-------------------------|---------------------------------------------------|
 | App      | http://localhost:8080   | The attendance system                             |
 | Mailpit  | http://localhost:8025   | Inbox that catches every email the app sends (OTP codes land here) |
-| Database | internal only (`db`)    | MariaDB 11.4, data kept in the `db_data` volume   |
+| Database | internal only (`db`)    | PostgreSQL 16, data kept in the `pg_data` volume  |
 
 The sample database (`database/student_management.sql`) is imported automatically the **first** time the database volume is created.
 
@@ -38,6 +38,7 @@ docker compose logs -f app      # PHP / Apache log (errors are logged here, not 
 docker compose down             # stop, keep data
 docker compose down -v          # stop and delete the database volume (next "up" re-imports the sample data)
 docker compose up -d --build    # rebuild after changing code
+docker compose exec db psql -U attendance student_management   # SQL prompt
 ```
 
 ### Configuration (`.env`)
@@ -49,7 +50,6 @@ docker compose up -d --build    # rebuild after changing code
 | `DB_NAME`           | `student_management`         | Database name                                |
 | `DB_USER`           | `attendance`                 | Database user used by the app                |
 | `DB_PASSWORD`       | `attendance`                 | Its password — **change for real use**       |
-| `DB_ROOT_PASSWORD`  | `change-me-root`             | MariaDB root password — **change for real use** |
 | `MAILPIT_PORT`      | `8025`                       | Host port for the Mailpit inbox              |
 | `SMTP_HOST`         | `mailpit`                    | SMTP server                                  |
 | `SMTP_PORT`         | `1025`                       | SMTP port                                    |
@@ -58,7 +58,7 @@ docker compose up -d --build    # rebuild after changing code
 | `MAIL_FROM`         | `no-reply@attendance.local`  | Sender address                               |
 | `MAIL_FROM_NAME`    | `Student Management`         | Sender name                                  |
 
-> The database passwords are only applied when the volume is first created. To change them later, run `docker compose down -v` first (this deletes the data) or change them inside MariaDB.
+> The database name, user and password are only applied when the volume is first created. To change them later, run `docker compose down -v` first (this deletes the data) or change them inside PostgreSQL.
 
 ### Sending real email (e.g. Gmail)
 
@@ -77,42 +77,52 @@ For Gmail, enable 2-Factor Authentication and create an **App Password** at [mya
 
 ---
 
-## 🧰 Option B — Manual setup (XAMPP / LAMP)
+## 🧰 Option B — Manual setup
 
 ### Prerequisites
 
-| Requirement     | Version           | Notes                                   |
-|-----------------|-------------------|-----------------------------------------|
-| PHP             | 8.1 or newer      | with the `pdo_mysql` extension          |
-| MySQL / MariaDB | MySQL 5.7+ / MariaDB 10.4+ |                                |
-| Apache          | 2.4+              | `.htaccess` support (`AllowOverride All`) recommended |
+| Requirement | Version      | Notes                                   |
+|-------------|--------------|-----------------------------------------|
+| PHP         | 8.1 or newer | with the `pdo_pgsql` extension          |
+| PostgreSQL  | 12 or newer  |                                         |
+| Apache      | 2.4+         | `.htaccess` support (`AllowOverride All`) recommended |
 
 ### Steps
 
 1. Copy the project into your web root (e.g. `htdocs/attendence_management`).
-2. Create a database named `student_management` and import `database/student_management.sql` (phpMyAdmin → Import, or `mysql student_management < database/student_management.sql`).
-3. The app connects to `localhost` as `root` with an empty password by default (the XAMPP default). To use anything else, set the `DB_*` environment variables listed above for the web server, e.g. in Apache:
+2. Create the database and import the schema and sample data:
+
+   ```bash
+   createdb -U postgres student_management
+   psql -U postgres -d student_management -f database/student_management.sql
+   ```
+
+3. The app connects to `localhost:5432` as `postgres` with an empty password by default. To use anything else, set the `DB_*` environment variables listed above for the web server, e.g. in Apache:
 
    ```apache
    SetEnv DB_HOST 127.0.0.1
+   SetEnv DB_PORT 5432
    SetEnv DB_USER attendance
    SetEnv DB_PASSWORD secret
    SetEnv DB_NAME student_management
    ```
 
+   The database user must own the tables: adding a student adds a column to the `attendence` table.
+
 4. Email (OTP for registration and password reset) needs the `SMTP_*` variables set the same way. Without `SMTP_HOST`, no email is sent and OTP steps cannot be completed.
 5. Open `http://localhost/attendence_management/`.
 
-### Upgrading an existing database
+### Coming from the old MySQL database
 
-Databases created from the old dump work as they are. These optional statements match the current dump (longer names, safe defaults):
+The app no longer connects to MySQL. Data in an existing MySQL database is **not** migrated automatically. The PostgreSQL schema differs from the old dump in a few column types, so load the new schema first and copy the rows across (a tool such as [pgloader](https://pgloader.io/) in data-only mode can do this):
 
-```sql
-ALTER TABLE student MODIFY name varchar(100) NOT NULL, MODIFY email varchar(100) NOT NULL;
-ALTER TABLE subject MODIFY name varchar(100) NOT NULL, MODIFY teacher_id int(11) NOT NULL DEFAULT '0';
-ALTER TABLE class   MODIFY divi varchar(10) NOT NULL DEFAULT 'A', MODIFY teacher_id int(11) NOT NULL DEFAULT '0';
-ALTER TABLE teacher_reg MODIFY status int(11) NOT NULL DEFAULT '0';
-```
+| Column                                             | MySQL          | PostgreSQL                 |
+|----------------------------------------------------|----------------|----------------------------|
+| `attendence.date`, `attendence.time`               | varchar, time(6) | `date`, `time`           |
+| `attendence.subject`                               | varchar        | `integer`                  |
+| `hod_reg.department_id`, `teacher_reg.department_id` | text         | `integer`                  |
+| `hod_reg.report_to`, `teacher_reg.report_to`       | text           | `integer` (empty → `NULL` for teachers) |
+| `attendence.S_<enrollment no>`                     | case-insensitive names | quoted, case-sensitive names |
 
 Existing MD5 password hashes keep working: each account is upgraded to a modern hash the next time it logs in.
 
@@ -167,6 +177,7 @@ The sample data includes these accounts (password `12345678` for all):
 | Problem | Likely Cause | Solution |
 |---|---|---|
 | "could not connect to its database" | DB not ready or wrong credentials | `docker compose ps` (db must be *healthy*); check `DB_*` values |
+| Database from an earlier MariaDB version of this stack | Old `db_data` volume is no longer used | The PostgreSQL data lives in a new `pg_data` volume and starts from the sample data; remove the old volume with `docker volume rm` once you no longer need it |
 | Port already in use | 8080 / 8025 taken | Change `APP_PORT` / `MAILPIT_PORT` in `.env` |
 | No OTP email | SMTP not reachable | Check Mailpit at :8025, or your `SMTP_*` settings; see `docker compose logs app` |
 | Blank page / error 500 | PHP error | Errors are logged, not displayed: `docker compose logs app` |

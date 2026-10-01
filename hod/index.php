@@ -16,7 +16,7 @@ foreach ($classes as $key => $row) {
 }
 // Teachers of this department who are not a class teacher yet.
 $free_teachers = db_all(
-	"SELECT id, first_name, last_name FROM teacher_reg WHERE status = '0' AND department_id = ? ORDER BY first_name",
+	'SELECT id, first_name, last_name FROM teacher_reg WHERE status = 0 AND department_id = ? ORDER BY first_name',
 	array($ur['department_id'])
 );
 $department = db_value('SELECT name FROM department WHERE id = ?', array($ur['department_id']));

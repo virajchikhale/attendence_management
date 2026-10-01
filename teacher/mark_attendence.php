@@ -5,7 +5,7 @@ $ur = require_login($role);
 
 $date = post('date');
 $time = post('time');
-$subject = db_row('SELECT * FROM subject WHERE id = ? AND teacher_id = ?', array(post('subject'), $ur['id']));
+$subject = db_row('SELECT * FROM subject WHERE id = ? AND teacher_id = ?', array(post_id('subject'), $ur['id']));
 
 // Opened directly, or with details that do not belong to this teacher: start over.
 if ($subject === null || !is_valid_date($date) || !preg_match('/^([01][0-9]|2[0-3]):[0-5][0-9]$/', $time)) {

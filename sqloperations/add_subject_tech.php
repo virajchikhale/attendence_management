@@ -3,11 +3,11 @@ require_once __DIR__ . '/../includes/auth.php';
 api_begin();
 $ur = require_login_api('hod');
 
-$teacher_id = post('teacher_id');
-$subject_id = post('subject_id');
+$teacher_id = post_id('teacher_id');
+$subject_id = post_id('subject_id');
 
 $subject = db_row(
-	"SELECT id FROM subject WHERE id = ? AND department_id = ? AND teacher_id = '0'",
+	'SELECT id FROM subject WHERE id = ? AND department_id = ? AND teacher_id = 0',
 	array($subject_id, $ur['department_id'])
 );
 if ($subject === null) {

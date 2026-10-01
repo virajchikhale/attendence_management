@@ -1,6 +1,6 @@
 # 📋 Student Attendance Management System
 
-A web-based attendance management system built with PHP and MySQL, designed for educational institutions to streamline the process of tracking and reporting student attendance across departments, classes, and subjects.
+A web-based attendance management system built with PHP and PostgreSQL, designed for educational institutions to streamline the process of tracking and reporting student attendance across departments, classes, and subjects.
 
 ---
 
@@ -67,7 +67,7 @@ The system supports full department, class, subject, and student lifecycle manag
 | Layer        | Technology                                    |
 |--------------|-----------------------------------------------|
 | Backend      | PHP 8.3 (PDO, prepared statements)            |
-| Database     | MariaDB 11.4 (MySQL 5.7+ also works)          |
+| Database     | PostgreSQL 16 (12+ works)                     |
 | Frontend     | HTML5, CSS3, Bootstrap 4.1                    |
 | JavaScript   | jQuery 3, AJAX (JSON)                         |
 | UI Libraries | Font Awesome 4.7, Select2, Animsition, Chart.js, Perfect Scrollbar |
@@ -85,7 +85,7 @@ attendence_management/
 ├── index.php                  # Landing page — role selection (Principal / HOD / Teacher)
 ├── logout.php                 # Ends the session
 ├── Dockerfile                 # PHP 8.3 + Apache image
-├── docker-compose.yml         # App + MariaDB + Mailpit
+├── docker-compose.yml         # App + PostgreSQL + Mailpit
 ├── .env.example               # Configuration template
 │
 ├── login/                     # <role>_login.php pages (shared code in _login.php)
@@ -112,7 +112,7 @@ attendence_management/
 ├── validation/                # AJAX checks: email, phone, admin code, OTP
 │
 ├── includes/
-│   ├── connection.php         # Database connection (PDO) + query helpers
+│   ├── connection.php         # PostgreSQL connection (PDO) + query helpers
 │   ├── auth.php               # Session, login guards, shared helpers
 │   ├── otp.php                # Email OTP (server side)
 │   ├── attendance_report.php  # Report calculation
@@ -124,7 +124,7 @@ attendence_management/
 ├── docker/                    # PHP settings used by the Docker image
 │
 └── database/
-    └── student_management.sql # Full database dump (tables + sample data)
+    └── student_management.sql # PostgreSQL schema + sample data
 ```
 
 ---
@@ -191,7 +191,7 @@ docker compose up -d --build
 - App: http://localhost:8080
 - Mail inbox (OTP emails): http://localhost:8025
 
-The sample database is imported automatically on first start. A manual (XAMPP / LAMP) setup is described in SETUP.md.
+The sample database is imported automatically on first start. A manual (Apache + PostgreSQL) setup is described in SETUP.md.
 
 ---
 

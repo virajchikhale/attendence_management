@@ -25,7 +25,7 @@ if (db_value('SELECT COUNT(*) FROM subject WHERE department_id = ? AND code = ?'
 }
 
 db_query(
-	"INSERT INTO subject(code, name, type, department_id, teacher_id, year) VALUES(?, ?, ?, ?, '0', ?)",
+	'INSERT INTO subject(code, name, type, department_id, teacher_id, year) VALUES(?, ?, ?, ?, 0, ?)',
 	array($code, $name, $type, $ur['department_id'], $year)
 );
 json_out(true);

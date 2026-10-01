@@ -8,7 +8,7 @@ $class = db_row('SELECT * FROM class WHERE teacher_id = ? ORDER BY id LIMIT 1', 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $class !== null) {
 	// Only a student of this teacher's own class can be changed.
-	$student = db_row('SELECT * FROM student WHERE id = ? AND class_id = ?', array(post('id'), $class['id']));
+	$student = db_row('SELECT * FROM student WHERE id = ? AND class_id = ?', array(post_id('id'), $class['id']));
 
 	if ($student === null) {
 		flash_set('This student was not found in your class.', 'error');

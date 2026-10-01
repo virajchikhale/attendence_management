@@ -52,6 +52,14 @@ function post($key)
 	return isset($_POST[$key]) && is_string($_POST[$key]) ? trim($_POST[$key]) : '';
 }
 
+// POST value as a record id: a whole number, or 0 when missing or not numeric.
+// (PostgreSQL rejects non-numeric text compared with an integer column.)
+function post_id($key)
+{
+	$value = post($key);
+	return ctype_digit($value) && strlen($value) <= 9 ? (int) $value : 0;
+}
+
 function json_out($ok, array $extra = array())
 {
 	header('Content-Type: application/json; charset=utf-8');
@@ -132,11 +140,17 @@ function attendance_column($enroll)
 	return 'S_' . $enroll;
 }
 
+// The same column name quoted for use in SQL. Only call with a validated enrollment number.
+function attendance_column_sql($enroll)
+{
+	return '"' . attendance_column($enroll) . '"';
+}
+
 function attendance_column_exists($enroll)
 {
 	return db_value(
-		"SELECT COUNT(*) FROM information_schema.COLUMNS
-		 WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'attendence' AND COLUMN_NAME = ?",
+		"SELECT COUNT(*) FROM information_schema.columns
+		 WHERE table_schema = current_schema() AND table_name = 'attendence' AND column_name = ?",
 		array(attendance_column($enroll))
 	) > 0;
 }

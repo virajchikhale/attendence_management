@@ -1,7 +1,7 @@
 <?php
 // Database connection + small query helpers.
-// Settings come from environment variables (see .env.example) and fall back to
-// the classic XAMPP defaults, so the same code runs in Docker and on a local stack.
+// PostgreSQL through PDO. Settings come from environment variables (see .env.example)
+// and fall back to a local PostgreSQL with its default port and "postgres" user.
 
 if (!function_exists('env')) {
 	function env($key, $default = null)
@@ -16,12 +16,12 @@ date_default_timezone_set(env('APP_TIMEZONE', 'Asia/Kolkata'));
 try {
 	$con = new PDO(
 		sprintf(
-			'mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4',
+			"pgsql:host=%s;port=%s;dbname=%s;options='--client_encoding=UTF8'",
 			env('DB_HOST', 'localhost'),
-			env('DB_PORT', '3306'),
+			env('DB_PORT', '5432'),
 			env('DB_NAME', 'student_management')
 		),
-		env('DB_USER', 'root'),
+		env('DB_USER', 'postgres'),
 		env('DB_PASSWORD', ''),
 		array(
 			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

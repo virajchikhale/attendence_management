@@ -14,7 +14,7 @@ $departments = array();
 $principals = array();
 if ($role === 'hod') {
 	// Only departments that do not have an HOD yet.
-	$departments = db_all("SELECT id, name FROM department WHERE status = '0' ORDER BY name");
+	$departments = db_all('SELECT id, name FROM department WHERE status = 0 ORDER BY name');
 	$principals = db_all('SELECT id, first_name, last_name FROM principal_reg ORDER BY first_name');
 } else if ($role === 'teacher') {
 	$departments = db_all('SELECT id, name FROM department ORDER BY name');
