@@ -1,16 +1,17 @@
 <?php
-include("../includes/connection.php");
-//error_reporting('E_ALL');
-$mob = $_POST['phone'];
-$table = $_POST['table'];
+require_once __DIR__ . '/../includes/auth.php';
+api_begin();
 
-        $sql="SELECT * from $table where phone='".$mob."'";
-        $result=mysql_query($sql);
-        $cnt=mysql_num_rows($result);
-        if($cnt > 0) {
-                echo "1";
-                }
-        else{
-                echo "0";
-        }
-?>
+$mob = post('phone');
+$table = post('table');
+
+if ($table == "student") {
+	require_login_api('teacher');
+} else if (role_for_table($table) === null) {
+	json_fail('Something went wrong...');
+}
+
+if (db_value("SELECT COUNT(*) FROM $table WHERE phone = ?", array($mob)) > 0) {
+	json_fail('This Number already exist in system');
+}
+json_out(true);

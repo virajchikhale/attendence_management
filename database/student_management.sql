@@ -185,9 +185,9 @@ INSERT INTO `attendence` (`id`, `date`, `time`, `subject`, `S_1`, `S_2`, `S_3`, 
 CREATE TABLE IF NOT EXISTS `class` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `year` int(11) NOT NULL,
-  `divi` varchar(10) NOT NULL,
+  `divi` varchar(10) NOT NULL DEFAULT 'A',
   `department_id` int(11) NOT NULL,
-  `teacher_id` int(11) NOT NULL,
+  `teacher_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
 
@@ -306,9 +306,9 @@ CREATE TABLE IF NOT EXISTS `student` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `roll` varchar(10) NOT NULL,
   `enroll` varchar(10) NOT NULL,
-  `name` varchar(20) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `phone` varchar(10) NOT NULL,
-  `email` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
   `class_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=201 ;
@@ -427,10 +427,10 @@ INSERT INTO `student` (`id`, `roll`, `enroll`, `name`, `phone`, `email`, `class_
 CREATE TABLE IF NOT EXISTS `subject` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(20) NOT NULL,
-  `name` varchar(20) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `type` int(11) NOT NULL,
   `department_id` int(11) NOT NULL,
-  `teacher_id` int(11) NOT NULL,
+  `teacher_id` int(11) NOT NULL DEFAULT '0',
   `year` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
@@ -466,7 +466,7 @@ CREATE TABLE IF NOT EXISTS `teacher_reg` (
   `password` text NOT NULL,
   `report_to` text NOT NULL,
   `department_id` text NOT NULL,
-  `status` int(11) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=34 ;
 

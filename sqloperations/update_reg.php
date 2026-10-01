@@ -1,37 +1,23 @@
 <?php
-include('../includes/connection.php');
+require_once __DIR__ . '/../includes/otp.php';
+api_begin();
 
-$email=$_POST['email'];
-$password=md5($_POST['password']);
-$table=$_POST['table'];
-$sql="UPDATE ".$table." SET `password`='".$password."'  WHERE email='".$email."'" ;
-        
+$password = isset($_POST['password']) && is_string($_POST['password']) ? $_POST['password'] : '';
 
-// if($table=="teacher_reg"){
-//         $i="select * from hod_reg where department_id='".$department."'";
-//         $x=mysql_fetch_array(mysql_query($i));
-//         $sqlinsert="insert into teacher_reg(first_name, last_name, email,phone,password,report_to,department_id) 
-//         values('".$fname."' , '".$lname."', '".$email."', '".$phoneno."', '".$password."', '".$x['id']."', '".$department."')";
-// }else if($table=="principal_reg"){
-//         $sqlinsert="insert into principal_reg(first_name, last_name, email,phone,password) 
-//         values('".$fname."' , '".$lname."', '".$email."', '".$phoneno."', '".$password."')";
-// }else if($table=="hod_reg"){
-//         $i="update department set status='1' where id='".$department."'";
-//         $x=mysql_fetch_array(mysql_query($i));
-//         $sqlinsert="insert into hod_reg(first_name, last_name, email,phone,password,report_to,department_id) 
-//         values('".$fname."' , '".$lname."', '".$email."', '".$phoneno."', '".$password."', '".$report_to."', '".$department."')";;
-// }else if($table=="admin_reg"){
-//         $sqlinsert="insert into admin_reg(first_name, last_name, email,phone,password) 
-//         values('".$fname."' , '".$lname."', '".$email."', '".$phoneno."', '".$password."')";;
-// }
-
-$res=mysql_query($sql);
-
-        //  echo $sql;
-if($res) {
-        echo "0";
-        }
-else{
-        echo "1";
+// The account being reset is the one whose OTP was verified, not whatever the browser sends.
+$otp = otp_verified('forgot');
+if ($otp === null || role_for_table($otp['table']) === null) {
+	json_fail('Please verify the OTP sent to your email first.');
 }
-?>
+if (strlen($password) < 8) {
+	json_fail('Password must be at least 8 characters.');
+}
+
+db_query(
+	'UPDATE ' . $otp['table'] . ' SET password = ? WHERE email = ?',
+	array(password_hash($password, PASSWORD_DEFAULT), $otp['email'])
+);
+
+otp_clear();
+send_password_changed_mail($otp['email'], role_for_table($otp['table']));
+json_out(true);
