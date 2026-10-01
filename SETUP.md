@@ -41,6 +41,14 @@ docker compose up -d --build    # rebuild after changing code
 docker compose exec db psql -U attendance student_management   # SQL prompt
 ```
 
+### Dummy attendance data
+
+For a fuller demo, load 8 weeks of randomised attendance for the sample subjects (safe to re-run; it replaces its own rows):
+
+```bash
+docker compose exec -T db psql -U attendance student_management < database/seed_dummy_data.sql
+```
+
 ### Configuration (`.env`)
 
 | Variable            | Default                      | Description                                  |
